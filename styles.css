@@ -1,0 +1,209 @@
+/* ==========================================================================
+   Google Fonts
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+
+/* ==========================================================================
+   Configuración Global y Reset
+   ========================================================================== */
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
+    scroll-padding-top: 0rem;
+}
+  
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+/* ==========================================================================
+   Estilos del Body y Contenedor Principal
+   ========================================================================== */
+body {
+    background: linear-gradient(135deg, #18181b 0%, #3a2c23 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.contenedor {
+    display: flex;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    max-width: 1000px;
+    width: 100%;
+    border: 1px solid rgba(255, 215, 100, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contenedor:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   Sección de Imagen
+   ========================================================================== */
+.contenedor-imagen {
+    flex: 1;
+    min-width: 300px;
+    overflow: hidden;
+    position: relative;
+}
+
+.contenedor-imagen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(24,24,27,0.5), transparent);
+}
+
+.contenedor-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.contenedor:hover .contenedor-imagen img {
+    transform: scale(1.05);
+}
+
+/* ==========================================================================
+   Sección de Login
+   ========================================================================== */
+.tarjeta-login {
+    flex: 1;
+    padding: 40px;
+    min-width: 300px;
+    background: rgba(24, 24, 27, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 0 10px 10px 0;
+    border-left: 1px solid rgba(255, 215, 100, 0.08);
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   Encabezado del Formulario y Título
+   ========================================================================== */
+.encabezado-tarjeta {
+    background: rgba(34, 40, 49, 0.7);
+    border-radius: 10px;
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.encabezado-tarjeta:hover {
+    transform: scale(1.02);
+}
+
+.titulo-resaltado {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #ffd764;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 1px 0 #fff2c7;
+    display: block;
+    text-align: center;
+    padding: 10px 0;
+}
+
+h2 {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Formulario y Campos de Entrada
+   ========================================================================== */
+.grupo-formulario {
+    margin-bottom: 20px;
+}
+
+.etiqueta-login {
+    display: block;
+    margin-bottom: 8px;
+    color: #bfae8e;
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(191, 174, 142, 0.3);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.15);
+    color: #18181b;
+}
+
+input:focus {
+    outline: none;
+    border-color: #ffd764;
+    box-shadow: 0 0 10px rgba(255, 215, 100, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Botón de Login
+   ========================================================================== */
+.boton-login {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #bfae8e 0%, #ffd764 100%);
+    color: #18181b;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(255, 215, 100, 0.08);
+    letter-spacing: 1px;
+}
+
+.boton-login:hover {
+    background: linear-gradient(90deg, #ffd764 0%, #bfae8e 100%);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 5px 15px rgba(255, 215, 100, 0.15);
+}
+
+.boton-login:active {
+    transform: translateY(0);
+}
+
+/* ==========================================================================
+   Media Queries - Diseño Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .contenedor {
+        flex-direction: column;
+    }
+    
+    .contenedor-imagen {
+        min-height: 200px;
+    }
+    .tarjeta-login {
+        border-radius: 0 0 10px 10px;
+        border-left: none;
+        border-top: 1px solid rgba(255, 215, 100, 0.08);
+    }
+}
