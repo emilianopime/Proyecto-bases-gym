@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Google Fonts
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+
+/* ==========================================================================
+   Configuración Global y Reset
+   ========================================================================== */
+html {
+    font-size: 62.5%;
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================================================
+   Estilos del Body y Contenedor Principal
+   ========================================================================== */
+body {
+    background: linear-gradient(135deg, #18181b 0%, #3a2c23 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+/* ==========================================================================
+   Header del Gimnasio
+   ========================================================================== */
+.header-gym {
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 215, 100, 0.08);
+}
+
+.header-gym h1 {
+    font-size: 4.8rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    letter-spacing: 2px;
+    margin: 0;
+    padding: 20px;
+}
+
+.contenedor {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+/* ==========================================================================
+   Grid de Botones
+   ========================================================================== */
+.grid-botones {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.boton-hub {
+    background: rgba(24, 24, 27, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 215, 100, 0.08);
+    border-radius: 15px;
+    padding: 30px;
+    text-decoration: none;
+    color: #ffd764;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+/* Tamaños específicos para cada botón */
+.boton-hub[href="clientes.html"] {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.boton-hub[href="entrenadores.html"],
+.boton-hub[href="membresias.html"],
+.boton-hub[href="clases.html"],
+.boton-hub[href="asistencia.html"],
+.boton-hub[href="pagos.html"] {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.boton-hub:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, rgba(24, 24, 27, 0.3) 0%, rgba(58, 44, 35, 0.3) 100%);
+}
+
+.boton-hub h2 {
+    font-size: 2.4rem;
+    font-weight: 900;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3), 0 1px 0 #fff2c7;
+}
+
+/* Ajuste de tamaños de fuente según el tamaño del botón */
+.boton-hub[href="clientes.html"] h2 {
+    font-size: 3.6rem;
+}
+
+/* ==========================================================================
+   Media Queries - Diseño Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .grid-botones {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .boton-hub {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+        min-height: 150px;
+    }
+
+    .boton-hub h2 {
+        font-size: 2rem;
+    }
+
+    .boton-hub[href="clientes.html"] h2 {
+        font-size: 2.4rem;
+    }
+} 
