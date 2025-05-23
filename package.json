@@ -1,0 +1,30 @@
+{
+  "name": "proyecto-bases-gym",
+  "version": "1.0.0",
+  "description": "Aplicacion web para gestionar gimnasios.",
+  "keywords": [
+    "gimnasio",
+    "gestor",
+    "node",
+    "js",
+    "html",
+    "css",
+    "clientes",
+    "oracledb"
+  ],
+  "homepage": "https://github.com/emilianopime/Proyecto-bases-gym#readme",
+  "bugs": {
+    "url": "https://github.com/emilianopime/Proyecto-bases-gym/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emilianopime/Proyecto-bases-gym.git"
+  },
+  "license": "MIT",
+  "author": "Emiliano P, Mauricio B, Idaly R",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
