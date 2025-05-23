@@ -25,10 +25,10 @@
                     <legend>Datos del Cliente</legend>
                     <div class="contenedor-RegistrarCliente-Campos">
                         <div class="campo">
-                            <label for="nombre">Nombre Completo</label>
+                            <label for="nombre">Nombre del cliente</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" required>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingresar nombre completo" required>
                             </div>
                         </div>
 
@@ -36,7 +36,7 @@
                             <label for="telefono">Teléfono</label>
                             <div class="campo-input">
                                 <i class="fas fa-phone"></i>
-                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingrese su número telefónico" required>
+                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingresar número telefónico" required>
                             </div>
                         </div>
 
@@ -44,7 +44,7 @@
                             <label for="correo">Correo Electrónico</label>
                             <div class="campo-input">
                                 <i class="fas fa-envelope"></i>
-                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required>
+                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingresar correo electrónico" required>
                             </div>
                         </div>
 
@@ -56,6 +56,21 @@
                     </div>
                 </fieldset>
             </form>
+        </div>
+
+        <div class="contenedor-BuscarClientes-Campo">
+            <legend>Buscar Clientes</legend>
+            <input type="text" id="miInput" onkeyup="filtrarTabla()" placeholder="Ingresar nombre de cliente registrado">
+            <table id="tablaClientes">
+                <caption>Lista de clientes registrados</caption>
+                <thead>
+                    <tr>
+                        <th>Nombre del cliente</th>
+                        <th>telefono</th>
+                        <th>Correo electrónico</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </main>
 </body>
