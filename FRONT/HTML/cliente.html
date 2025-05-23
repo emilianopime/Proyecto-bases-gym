@@ -1,46 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Registro de Clientes</title>
     <link rel="stylesheet" href="../css/cliente.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 
 <body>
     <header class="encabezado">
-        <h1 class="encabezado-Titulo"> Clientes </h1>
+        <h1 class="encabezado-Titulo">Registro de Clientes</h1>
         <nav class="encabezado-Nav">
-            <a href="hub.html"> Regresar a inicio </a>
+            <a href="hub.html" class="btn-regresar">
+                <i class="fas fa-arrow-left"></i> Regresar a inicio
+            </a>
         </nav>
     </header>
 
     <main class="contenedor">
-    <div class="contenedor-RegistrarCliente">
-        <form>
-            <fieldset>
-                <legend> Registrar Cliente </legend>
-                <div class="contenedor-RegistrarCliente-Campos">
-                          <div class="campo">
-                              <label for="">Nombre</label>
-                              <input class="input-text" type="text" placeholder="Nombre">
-                          </div>
+        <div class="contenedor-RegistrarCliente">
+            <form class="formulario" id="formulario-cliente">
+                <fieldset>
+                    <legend>Datos del Cliente</legend>
+                    <div class="contenedor-RegistrarCliente-Campos">
+                        <div class="campo">
+                            <label for="nombre">Nombre Completo</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" required>
+                            </div>
+                        </div>
 
-                          <div class="campo">
-                              <Label> Telefono</Label>
-                              <input class="input-text" type="tel" placeholder="Telefono">
-                          </div>
+                        <div class="campo">
+                            <label for="telefono">Teléfono</label>
+                            <div class="campo-input">
+                                <i class="fas fa-phone"></i>
+                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingrese su número telefónico" required>
+                            </div>
+                        </div>
 
-                          <div class="campo">
-                              <label for="">Correo</label>
-                              <input class="input-text" type="email" placeholder="Correo">
-                          </div>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+                        <div class="campo">
+                            <label for="correo">Correo Electrónico</label>
+                            <div class="campo-input">
+                                <i class="fas fa-envelope"></i>
+                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-user-plus"></i> Registrar Cliente
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     </main>
 </body>
-
 </html>
