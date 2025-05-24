@@ -25,10 +25,42 @@
                     <legend>Datos del Cliente</legend>
                     <div class="contenedor-RegistrarCliente-Campos">
                         <div class="campo">
-                            <label for="nombre">Nombre Completo</label>
+                            <label for="nombre">Nombre del cliente</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo" required>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingresar nombre" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="nombre">Segundo Nombre</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Dejarlo en blanco en caso de no tener" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="apellido">Apellido Paterno</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="apellidoPaterno" name="apellidoPaterno" placeholder="Ingresar apellido paterno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="apellido">Apellido Materno</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="apellidoMaterno" name="apellidoMaterno" placeholder="Ingresar apellido materno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="fechaDeNacimiento">Fecha de Nacimiento</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="date" id="fechaDeNacimiento" name="fechaDeNacimiento" placeholder="Ingresar fecha de nacimiento" required>
                             </div>
                         </div>
 
@@ -36,7 +68,7 @@
                             <label for="telefono">Teléfono</label>
                             <div class="campo-input">
                                 <i class="fas fa-phone"></i>
-                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingrese su número telefónico" required>
+                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingresar número telefónico" required>
                             </div>
                         </div>
 
@@ -44,7 +76,17 @@
                             <label for="correo">Correo Electrónico</label>
                             <div class="campo-input">
                                 <i class="fas fa-envelope"></i>
-                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required>
+                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingresar correo electrónico" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="telefono">Genero</label>
+                            <div class="campo-input">
+                                <i class="fas fa-venus-mars"></i> <select class="input-text" id="genero" name="genero" required>
+                                    <option value="">-- Seleccionar --</option> <option value="masculino">Masculino</option>
+                                    <option value="femenino">Femenino</option>
+                                </select>
                             </div>
                         </div>
 
@@ -56,6 +98,26 @@
                     </div>
                 </fieldset>
             </form>
+        </div>
+
+        <div class="contenedor-BuscarClientes-Tabla">
+            <legend>Buscar Clientes</legend>
+            <input type="text" id="buscarCliente" onkeyup="filtrarTabla()" placeholder="Ingresar nombre de cliente registrado">
+            <table id="tablaClientes">
+                <caption>Lista de clientes registrados</caption>
+                <thead>
+                    <tr>
+                        <th>Nombre cliente</th>
+                        <th>Segundo nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Telefono</th>
+                        <th>Correo electrónico</th>
+                        <th>Genero</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </main>
 </body>
