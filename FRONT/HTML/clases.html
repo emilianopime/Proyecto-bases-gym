@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro De Clases</title>
+    <link rel="stylesheet" href="../css/clases.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+    </head>
+
+    <body>
+        <header class="encabezado">
+        <h1 class="encabezado-Titulo">Registro De Clases</h1>
+        <nav class="encabezado-Nav">
+            <a href="hub.html" class="btn-regresar">
+                <i class="fas fa-arrow-left"></i> Regresar a inicio
+            </a>
+        </nav>
+    </header>
+    <main class="contenedor">
+        <div class="contenedor-RegistrarClases">
+            <form class="formulario" id="formulario-clases">
+                <fieldset>
+                    <legend>Registro De Clases</legend>
+                    <div class="contenedor-RegistrarClases-Campos">
+                        <div class="campo">
+                            <label for="Nombre de la Clase">Nombre de la Clase</label>
+                            <div class="campo-input">
+                                <i class="fas fa-clipboard-list"></i>
+                                <input class="input-text" type="text" id="Nombre de la Clase" name="Nombre de la Clase" placeholder="Ingrese el nombre de la Clase" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="ID del Entrenador">ID del Entrenador</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="number" id="ID del Etrennador" name="ID del Etrennador" placeholder="Ingrese el ID del Etrennador" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Hora de Inicio">Hora de Inicio</label>
+                            <div class="campo-input">
+                                <i class="fas fa-clock"></i>
+                                <input class="input-text" type="time" id="Hora de Inicio" name="Hora de Inicio" placeholder="Ingrese la hora de Inicio" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Tiempo de Duración">Tiempo de Duración</labeñ>
+                            <div class="campo-input">
+                                <i class="fas fa-clock"></i>
+                                <input class="input-text" type="time" name="Tiempo de Duración" id="Tiempo de Duración" placeholder="Tiempo de duración en minutos">
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Capacidad Máxima">Capacidad Máxima</label>
+                            <div class="campo-input">
+                                <i class="fas fa-users"></i>
+                                <input class="input-text" type="number" id="Capacidad Máxima" name="Capacidad Máxima" placeholder="Ingrese la capacidad máxima de personas" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label>Días de la Semana</label>
+                            <div class="campo-input dias-semana">
+                                <label><input type="checkbox" name="dias[]" value="Lunes"> Lunes</label>
+                                <label><input type="checkbox" name="dias[]" value="Martes"> Martes</label>
+                                <label><input type="checkbox" name="dias[]" value="Miércoles"> Miércoles</label>
+                                <label><input type="checkbox" name="dias[]" value="Jueves"> Jueves</label>
+                                <label><input type="checkbox" name="dias[]" value="Viernes"> Viernes</label>
+                                <label><input type="checkbox" name="dias[]" value="Sábado"> Sábado</label>
+                                <label><input type="checkbox" name="dias[]" value="Domingo"> Domingo</label>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-user-plus"></i> Registrar Clases
+                            </button>
+                        </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
