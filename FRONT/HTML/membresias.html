@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Membresias</title>
+    <link rel="stylesheet" href="../css/membresias.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+    </head>
+
+    <body>
+        <header class="encabezado">
+        <h1 class="encabezado-Titulo">Registro Membresia</h1>
+        <nav class="encabezado-Nav">
+            <a href="hub.html" class="btn-regresar">
+                <i class="fas fa-arrow-left"></i> Regresar a inicio
+            </a>
+        </nav>
+    </header>
+    <main class="contenedor">
+        <div class="contenedor-RegistrarMembresia">
+            <form class="formulario" id="formulario-membresia">
+                <fieldset>
+                    <legend>Registro de Membresia</legend>
+                    <div class="contenedor-RegistrarMembresia-Campos">
+                        <div class="campo">
+                            <label for="Nombre de membresia">Tipo de Membresia</label>
+                            <div class="campo-input">
+                                <i class="fas fa-clipboard-list"></i>
+                                <input class="input-text" type="text" id="Nombre de Membresia" name="Nombre de Membresia" placeholder="Ingrese el nombre de la Membresia" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Precio de la membresia">Precio Membresia</label>
+                            <div class="campo-input">
+                                <i class="fas fa-dollar-sign"></i>
+                                <input class="input-text" type="number" id="Precio Membresia" name="Precio Membresia" placeholder="Ingrese el precio de la Membresia" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Duracion de la Membresia">Duracion de la membresia</label>
+                            <div class="campo-input">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input class="input-text" type="date" id="Fecha de Duración de la membresia " name="Fecha de Duració de la Membresia" placeholder="Ingrese su Apellido Paterno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Acceso a Pisina">Acceso a Pisina</label>
+                            <div class="campo-input">
+                                <i class="fas fa-key"></i>
+                                <input class="input-text" type="checkbox" id="Acceso a Pisina" name="Acceso a Pisina" placeholder="¿Tiene acceso a la Pisina?" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <laber for="Acceso a Gimnasio">Acceso a Gimnacio</laber>
+                            <div class="campo-input">
+                                <i class="fas fa-key"></i>
+                                <input class="input-text" type="checkbox" id="Acceso a Gimnasio" name="Acceso a Gimnasio" placeholder="¿Tiene acceso a Gimnacio?" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Descripción de Membresia">Descripción Membresia</label>
+                            <div class="campo-input">
+                                <i class="fas fa-info-circle"></i>
+                                <input class="input-text" type="text" id="Descripción de Tipo de Menbresia" name="Descripción de Tipo de Menbresia" placeholder="Descripción de Tipo de Menbresia" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-user-plus"></i> Registrar Membresia
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
