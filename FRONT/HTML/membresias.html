@@ -10,7 +10,7 @@
 
     <body>
         <header class="encabezado">
-        <h1 class="encabezado-Titulo">Registro Membresia</h1>
+        <h1 class="encabezado-Titulo">Registro Membresía</h1>
         <nav class="encabezado-Nav">
             <a href="hub.html" class="btn-regresar">
                 <i class="fas fa-arrow-left"></i> Regresar a inicio
@@ -18,32 +18,32 @@
         </nav>
     </header>
     <main class="contenedor">
-        <div class="contenedor-RegistrarMembresia">
-            <form class="formulario" id="formulario-membresia">
+        <div class="contenedor-RegistrarMembresía">
+            <form class="formulario" id="formulario-membresía">
                 <fieldset>
                     <legend>Registro de Membresia</legend>
-                    <div class="contenedor-RegistrarMembresia-Campos">
+                    <div class="contenedor-RegistrarMembresía-Campos">
                         <div class="campo">
-                            <label for="Nombre de membresia">Tipo de Membresia</label>
+                            <label for="Nombre de membresía">Tipo de Membresia</label>
                             <div class="campo-input">
                                 <i class="fas fa-clipboard-list"></i>
-                                <input class="input-text" type="text" id="Nombre de Membresia" name="Nombre de Membresia" placeholder="Ingrese el nombre de la Membresia" required>
+                                <input class="input-text" type="text" id="Nombre de Membresía" name="Nombre de Membresía" placeholder="Ingrese el nombre de la Membresía" required>
                             </div>
                         </div>
 
                         <div class="campo">
-                            <label for="Precio de la membresia">Precio Membresia</label>
+                            <label for="Precio de la membresía">Precio Membresía</label>
                             <div class="campo-input">
                                 <i class="fas fa-dollar-sign"></i>
-                                <input class="input-text" type="number" id="Precio Membresia" name="Precio Membresia" placeholder="Ingrese el precio de la Membresia" required>
+                                <input class="input-text" type="number" id="Precio Membresía" name="Precio Membresía" placeholder="Ingrese el precio de la Membresía" required>
                             </div>
                         </div>
 
                         <div class="campo">
-                            <label for="Duracion de la Membresia">Duracion de la membresia</label>
+                            <label for="Duración de la Membresía">Duración de la membresía</label>
                             <div class="campo-input">
                                 <i class="fas fa-calendar-alt"></i>
-                                <input class="input-text" type="date" id="Fecha de Duración de la membresia " name="Fecha de Duració de la Membresia" placeholder="Ingrese su Apellido Paterno" required>
+                                <input class="input-text" type="date" id="Fecha de Duración de la membresía " name="Fecha de Duració de la Membresía" placeholder="Ingresa la fecha de Duración de la Membresía" required>
                             </div>
                         </div>
 
@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="campo">
-                            <laber for="Acceso a Gimnasio">Acceso a Gimnacio</laber>
+                            <label for="Acceso a Gimnasio">Acceso a Gimnacio</label>
                             <div class="campo-input">
                                 <i class="fas fa-key"></i>
                                 <input class="input-text" type="checkbox" id="Acceso a Gimnasio" name="Acceso a Gimnasio" placeholder="¿Tiene acceso a Gimnacio?" required>
@@ -64,16 +64,26 @@
                         </div>
 
                         <div class="campo">
-                            <label for="Descripción de Membresia">Descripción Membresia</label>
+                            <label for="Descripción de Membresía">Descripción Membresia</label>
                             <div class="campo-input">
                                 <i class="fas fa-info-circle"></i>
-                                <input class="input-text" type="text" id="Descripción de Tipo de Menbresia" name="Descripción de Tipo de Menbresia" placeholder="Descripción de Tipo de Menbresia" required>
+                                <input class="input-text" type="text" id="Descripción de Tipo de Menbresía" name="Descripción de Tipo de Menbresía" placeholder="Descripción de Tipo de Menbresía" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label>Clases Disponibles</label>
+                            <div class="campo-input" style="display: flex; flex-direction: column;">
+                                <label><input type="checkbox" name="ClasesAsociadas[]" value="1"> Yoga</label>
+                                <label><input type="checkbox" name="ClasesAsociadas[]" value="2"> Spinning</label>
+                                <label><input type="checkbox" name="ClasesAsociadas[]" value="3"> Crossfit</label>
+                                <label><input type="checkbox" name="ClasesAsociadas[]" value="4"> Zumba</label>
                             </div>
                         </div>
 
                         <div class="campo">
                             <button type="submit" class="btn-submit">
-                                <i class="fas fa-user-plus"></i> Registrar Membresia
+                                <i class="fas fa-user-plus"></i> Registrar Membresía
                             </button>
                         </div>
                     </div>
