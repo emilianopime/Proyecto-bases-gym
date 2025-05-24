@@ -28,7 +28,39 @@
                             <label for="nombre">Nombre del cliente</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingresar nombre completo" required>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingresar nombre" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="nombre">Segundo Nombre</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Dejarlo en blanco en caso de no tener" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="apellido">Apellido Paterno</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="apellidoPaterno" name="apellidoPaterno" placeholder="Ingresar apellido paterno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="apellido">Apellido Materno</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="apellidoMaterno" name="apellidoMaterno" placeholder="Ingresar apellido materno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="fechaDeNacimiento">Fecha de Nacimiento</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="date" id="fechaDeNacimiento" name="fechaDeNacimiento" placeholder="Ingresar fecha de nacimiento" required>
                             </div>
                         </div>
 
@@ -49,6 +81,16 @@
                         </div>
 
                         <div class="campo">
+                            <label for="telefono">Genero</label>
+                            <div class="campo-input">
+                                <i class="fas fa-venus-mars"></i> <select class="input-text" id="genero" name="genero" required>
+                                    <option value="">-- Seleccionar --</option> <option value="masculino">Masculino</option>
+                                    <option value="femenino">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="campo">
                             <button type="submit" class="btn-submit">
                                 <i class="fas fa-user-plus"></i> Registrar Cliente
                             </button>
@@ -58,16 +100,21 @@
             </form>
         </div>
 
-        <div class="contenedor-BuscarClientes-Campo">
+        <div class="contenedor-BuscarClientes-Tabla">
             <legend>Buscar Clientes</legend>
-            <input type="text" id="miInput" onkeyup="filtrarTabla()" placeholder="Ingresar nombre de cliente registrado">
+            <input type="text" id="buscarCliente" onkeyup="filtrarTabla()" placeholder="Ingresar nombre de cliente registrado">
             <table id="tablaClientes">
                 <caption>Lista de clientes registrados</caption>
                 <thead>
                     <tr>
-                        <th>Nombre del cliente</th>
-                        <th>telefono</th>
+                        <th>Nombre cliente</th>
+                        <th>Segundo nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Fecha de Nacimiento</th>
+                        <th>Telefono</th>
                         <th>Correo electrónico</th>
+                        <th>Genero</th>
                     </tr>
                 </thead>
             </table>
