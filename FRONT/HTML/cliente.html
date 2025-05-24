@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Clientes</title>
+    <title>Módulo de Clientes</title>
     <link rel="stylesheet" href="../css/cliente.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
     <header class="encabezado">
-        <h1 class="encabezado-Titulo">Registro de Clientes</h1>
+        <h1 class="encabezado-Titulo">Módulo de Clientes</h1>
         <nav class="encabezado-Nav">
             <a href="hub.html" class="btn-regresar">
                 <i class="fas fa-arrow-left"></i> Regresar a inicio
@@ -19,29 +19,35 @@
     </header>
 
     <main class="contenedor">
-        <div class="contenedor-RegistrarCliente">
+        <div class="acciones-principales">
+            <button class="btn-accion-principal" id="btnMostrarFormularioRegistro">
+                <i class="fas fa-user-plus"></i> Registrar Nuevo Cliente
+            </button>
+        </div>
+
+        <div class="contenedor-RegistrarCliente" id="seccionRegistrarCliente" style="display: none;">
             <form class="formulario" id="formulario-cliente">
                 <fieldset>
-                    <legend>Datos del Cliente</legend>
+                    <legend>Datos del Nuevo Cliente</legend>
                     <div class="contenedor-RegistrarCliente-Campos">
                         <div class="campo">
-                            <label for="nombre">Nombre del cliente</label>
+                            <label for="primerNombre">Primer Nombre</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingresar nombre" required>
+                                <input class="input-text" type="text" id="primerNombre" name="primerNombre" placeholder="Ingresar primer nombre" required>
                             </div>
                         </div>
 
                         <div class="campo">
-                            <label for="nombre">Segundo Nombre</label>
+                            <label for="segundoNombre">Segundo Nombre</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Dejarlo en blanco en caso de no tener" required>
+                                <input class="input-text" type="text" id="segundoNombre" name="segundoNombre" placeholder="Dejar en blanco si no tiene">
                             </div>
                         </div>
 
                         <div class="campo">
-                            <label for="apellido">Apellido Paterno</label>
+                            <label for="apellidoPaterno">Apellido Paterno</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
                                 <input class="input-text" type="text" id="apellidoPaterno" name="apellidoPaterno" placeholder="Ingresar apellido paterno" required>
@@ -49,18 +55,18 @@
                         </div>
 
                         <div class="campo">
-                            <label for="apellido">Apellido Materno</label>
+                            <label for="apellidoMaterno">Apellido Materno</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="apellidoMaterno" name="apellidoMaterno" placeholder="Ingresar apellido materno" required>
+                                <input class="input-text" type="text" id="apellidoMaterno" name="apellidoMaterno" placeholder="Ingresar apellido materno">
                             </div>
                         </div>
 
                         <div class="campo">
-                            <label for="fechaDeNacimiento">Fecha de Nacimiento</label>
+                            <label for="fechaNacimiento">Fecha de Nacimiento</label>
                             <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="date" id="fechaDeNacimiento" name="fechaDeNacimiento" placeholder="Ingresar fecha de nacimiento" required>
+                                <i class="fas fa-calendar-alt"></i>
+                                <input class="input-text" type="date" id="fechaNacimiento" name="fechaNacimiento" required>
                             </div>
                         </div>
 
@@ -68,7 +74,7 @@
                             <label for="telefono">Teléfono</label>
                             <div class="campo-input">
                                 <i class="fas fa-phone"></i>
-                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingresar número telefónico" required>
+                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingresar número telefónico">
                             </div>
                         </div>
 
@@ -81,18 +87,24 @@
                         </div>
 
                         <div class="campo">
-                            <label for="telefono">Genero</label>
+                            <label for="genero">Género</label>
                             <div class="campo-input">
-                                <i class="fas fa-venus-mars"></i> <select class="input-text" id="genero" name="genero" required>
-                                    <option value="">-- Seleccionar --</option> <option value="masculino">Masculino</option>
-                                    <option value="femenino">Femenino</option>
+                                <i class="fas fa-venus-mars"></i>
+                                <select class="input-text" id="genero" name="genero" required>
+                                    <option value="">-- Seleccionar --</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="O">Otro</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="campo">
                             <button type="submit" class="btn-submit">
-                                <i class="fas fa-user-plus"></i> Registrar Cliente
+                                <i class="fas fa-save"></i> Guardar Cliente
+                            </button>
+                            <button type="button" class="btn-cancelar" id="btnCancelarRegistro">
+                                <i class="fas fa-times"></i> Cancelar
                             </button>
                         </div>
                     </div>
@@ -100,25 +112,78 @@
             </form>
         </div>
 
-        <div class="contenedor-BuscarClientes-Tabla">
-            <legend>Buscar Clientes</legend>
-            <input type="text" id="buscarCliente" onkeyup="filtrarTabla()" placeholder="Ingresar nombre de cliente registrado">
+        <div class="contenedor-BuscarClientes-Tabla" id="seccionListaClientes">
+            <legend>Clientes Registrados</legend>
+            <input type="text" id="buscarCliente" onkeyup="filtrarTabla()" placeholder="Buscar por nombre, apellido, correo...">
             <table id="tablaClientes">
-                <caption>Lista de clientes registrados</caption>
+                <caption>Lista de clientes</caption>
                 <thead>
                     <tr>
-                        <th>Nombre cliente</th>
-                        <th>Segundo nombre</th>
-                        <th>Apellido Paterno</th>
-                        <th>Apellido Materno</th>
-                        <th>Fecha de Nacimiento</th>
-                        <th>Telefono</th>
+                        <th>ID</th>
+                        <th>Nombre Completo</th>
+                        <th>Teléfono</th>
                         <th>Correo electrónico</th>
-                        <th>Genero</th>
+                        <th>Membresía Actual</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
+                <tbody id="cuerpoTablaClientes">
+                    <!-- Las filas de clientes se insertarán aquí por JavaScript -->
+                </tbody>
             </table>
         </div>
+
+        <div class="contenedor-PerfilCliente" id="seccionPerfilCliente" style="display: none;">
+            <div class="perfil-header">
+                <h2 id="perfilClienteNombreCompleto">Nombre del Cliente</h2>
+                <button class="btn-cerrar-perfil" id="btnCerrarPerfil"><i class="fas fa-times"></i> Cerrar</button>
+            </div>
+            <div class="perfil-tabs">
+                <button class="tablink active" data-tab="infoPersonalTab">Info. Personal</button>
+                <button class="tablink" data-tab="membresiasClienteTab">Membresías</button>
+                <button class="tablink" data-tab="asistenciaClienteTab">Asistencia</button>
+                <button class="tablink" data-tab="notasClienteTab">Notas</button>
+            </div>
+
+            <div id="infoPersonalTab" class="tabcontent" style="display: block;">
+                <h3>Información Personal <button class="btn-accion-tab" id="btnEditarInfoPersonal"><i class="fas fa-edit"></i> Editar</button></h3>
+                <div class="detalle-info">
+                    <p><strong>ID Cliente:</strong> <span id="perfilClienteID"></span></p>
+                    <p><strong>Primer Nombre:</strong> <span id="perfilPrimerNombre"></span></p>
+                    <p><strong>Segundo Nombre:</strong> <span id="perfilSegundoNombre"></span></p>
+                    <p><strong>Apellido Paterno:</strong> <span id="perfilApellidoPaterno"></span></p>
+                    <p><strong>Apellido Materno:</strong> <span id="perfilApellidoMaterno"></span></p>
+                    <p><strong>Fecha de Nacimiento:</strong> <span id="perfilFechaNacimiento"></span></p>
+                    <p><strong>Teléfono:</strong> <span id="perfilTelefono"></span></p>
+                    <p><strong>Correo:</strong> <span id="perfilCorreo"></span></p>
+                    <p><strong>Género:</strong> <span id="perfilGenero"></span></p>
+                    <p><strong>Fecha de Registro:</strong> <span id="perfilFechaRegistro"></span></p>
+                </div>
+            </div>
+
+            <div id="membresiasClienteTab" class="tabcontent">
+                <h3>Membresías del Cliente <button class="btn-accion-tab" id="btnAbrirFormMembresia"><i class="fas fa-plus-circle"></i> Asignar Nueva</button></h3>
+                <div id="listaMembresiasCliente">
+                    <p><em>Carga de membresías pendiente...</em></p>
+                </div>
+            </div>
+
+            <div id="asistenciaClienteTab" class="tabcontent">
+                <h3>Historial de Asistencia</h3>
+                <div id="listaAsistenciaCliente">
+                    <p><em>Carga de asistencia pendiente...</em></p>
+                </div>
+            </div>
+            
+            <div id="notasClienteTab" class="tabcontent">
+                <h3>Notas Internas <button class="btn-accion-tab" id="btnAbrirFormNota"><i class="fas fa-sticky-note"></i> Agregar Nota</button></h3>
+                <div id="listaNotasCliente">
+                    <p><em>Carga de notas pendiente...</em></p>
+                </div>
+            </div>
+        </div>
     </main>
+
+    <script src="../js/cliente.js"></script>
 </body>
 </html>

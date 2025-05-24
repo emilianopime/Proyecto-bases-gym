@@ -28,6 +28,9 @@ app.get('/', (req, res) => {
 const loginRoutes = require('./routes/login');
 app.use('/api', loginRoutes);
 
+// rutas para clientes
+const clienteRoutes = require('./routes/clienteRoutes'); // Asegúrate que el nombre del archivo sea correcto
+app.use('/api', clienteRoutes); // Todas las rutas de clientes estarán bajo /api
 
 
 // Iniciar servidor

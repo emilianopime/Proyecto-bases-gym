@@ -286,3 +286,232 @@ body {
         min-width: 800px;
     }
 }
+
+/* ==========================================================================
+   Estilos para el Módulo de Clientes (Nuevos y Ajustes)
+   ========================================================================== */
+
+.acciones-principales {
+    margin-bottom: 2rem;
+    text-align: right; /* O center, según preferencia */
+}
+
+.btn-accion-principal {
+    padding: 1rem 2rem;
+    background: #ffd764;
+    color: #18181b;
+    border: none;
+    border-radius: 0.8rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex; /* Para alinear icono y texto */
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.btn-accion-principal:hover {
+    background: #e6bf5a; /* Un tono más oscuro para hover */
+    box-shadow: 0 4px 12px rgba(255, 215, 100, 0.2);
+}
+
+.formulario .campo .btn-cancelar {
+    width: 100%;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.8rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    margin-top: 1rem; /* Espacio respecto al botón de submit */
+}
+
+.formulario .campo .btn-cancelar:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+
+/* Tabla de Clientes - Ajustes y Botones de Acción */
+#tablaClientes th:last-child,
+#tablaClientes td:last-child {
+    text-align: center; /* Para centrar los botones de acción */
+}
+
+.btn-accion-tabla {
+    background: none;
+    border: none;
+    color: #ffd764;
+    cursor: pointer;
+    font-size: 1.8rem; /* Tamaño del icono */
+    padding: 0.5rem;
+    margin: 0 0.3rem;
+    transition: color 0.3s ease;
+}
+
+.btn-accion-tabla:hover {
+    color: #ffffff;
+}
+
+/* Contenedor del Perfil del Cliente */
+.contenedor-PerfilCliente {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 3rem;
+}
+
+.perfil-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 215, 100, 0.2);
+}
+
+.perfil-header h2 {
+    font-size: 2.8rem;
+    color: #ffd764;
+    font-weight: 600;
+}
+
+.btn-cerrar-perfil {
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+    border: none;
+    border-radius: 50%; /* Para hacerlo circular */
+    width: 4rem;
+    height: 4rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cerrar-perfil:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Estilos para las Pestañas del Perfil */
+.perfil-tabs {
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 0.8rem;
+    margin-bottom: 2rem;
+    display: flex; /* Para que los botones se alineen horizontalmente */
+}
+
+.perfil-tabs button.tablink {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 1.4rem 1.6rem;
+    transition: background-color 0.3s;
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: 500;
+    flex-grow: 1; /* Para que ocupen el espacio disponible */
+    text-align: center;
+}
+
+.perfil-tabs button.tablink:hover {
+    background-color: rgba(255, 215, 100, 0.1);
+}
+
+.perfil-tabs button.tablink.active {
+    background-color: #ffd764;
+    color: #18181b;
+    font-weight: 600;
+}
+
+.tabcontent {
+    padding: 1rem 0; /* Ajustar según necesidad */
+    /* border-top: none; */ /* Ya no es necesario con el nuevo estilo de tabs */
+    color: #e0e0e0;
+}
+
+.tabcontent h3 {
+    font-size: 2rem;
+    color: #ffd764;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-accion-tab {
+    background: rgba(255, 215, 100, 0.15);
+    color: #ffd764;
+    border: 1px solid rgba(255, 215, 100, 0.3);
+    padding: 0.6rem 1.2rem;
+    font-size: 1.3rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-accion-tab:hover {
+    background: rgba(255, 215, 100, 0.25);
+    color: #ffffff;
+}
+
+
+.detalle-info p {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    line-height: 1.7;
+}
+
+.detalle-info p strong {
+    color: #ffffff;
+    min-width: 180px; /* Ajusta para alinear los valores */
+    display: inline-block;
+}
+
+#listaMembresiasCliente, 
+#listaAsistenciaCliente, 
+#listaNotasCliente {
+    /* Estilos para las listas dentro de las pestañas, si son tablas o divs con items */
+    font-size: 1.4rem;
+}
+
+#listaMembresiasCliente p em,
+#listaAsistenciaCliente p em,
+#listaNotasCliente p em {
+    color: rgba(255,255,255,0.6);
+    font-style: italic;
+}
+
+/* Responsive para el perfil */
+@media (max-width: 768px) {
+    .perfil-header h2 {
+        font-size: 2.2rem;
+    }
+    .perfil-tabs button.tablink {
+        font-size: 1.3rem;
+        padding: 1rem 0.8rem;
+    }
+    .contenedor-PerfilCliente {
+        padding: 2rem;
+    }
+    .detalle-info p strong {
+        min-width: 140px;
+    }
+}
