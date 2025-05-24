@@ -24,7 +24,7 @@ html {
    ========================================================================== */
 body {
     background: linear-gradient(135deg, #18181b 0%, #3a2c23 100%);
-    min-height: 103vh;
+    min-height: 100vh;
     font-family: 'Montserrat', Arial, sans-serif;
     color: #ffffff;
     line-height: 1.6;
@@ -78,7 +78,7 @@ body {
     padding: 2rem;
 }
 
-.contenedor-RegistrarEntrenador {
+.contenedor-RegistrarAsistencia {
     max-width: 60rem;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.05);
@@ -186,7 +186,7 @@ body {
         font-size: 3rem;
     }
 
-    .contenedor-RegistrarEntrenador {
+    .contenedor-RegistrarAsistencia {
         padding: 2rem;
     }
 

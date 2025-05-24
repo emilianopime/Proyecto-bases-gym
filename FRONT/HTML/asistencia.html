@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Asistencia</title>
+    <link rel="stylesheet" href="../css/asistencia.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+    </head>
+
+    <body>
+        <header class="encabezado">
+        <h1 class="encabezado-Titulo">Registro Asistencia</h1>
+        <nav class="encabezado-Nav">
+            <a href="hub.html" class="btn-regresar">
+                <i class="fas fa-arrow-left"></i> Regresar a inicio
+            </a>
+        </nav>
+    </header>
+    <main class="contenedor">
+        <div class="contenedor-RegistrarAsistencia">
+            <form class="formulario" id="formulario-asistencia">
+                <fieldset>
+                    <legend>Datos de Asistencia</legend>
+                    <div class="contenedor-RegistrarAsistencia-Campos">
+                        <div class="campo">
+                            <label for="nombre">ID Cliente</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="number" id="ID Cliente" name="ID Cliente" placeholder="Ingrese el ID del Cliente" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="ID Clase">ID Clase</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="number" id="ID Clase" name="ID Clase" placeholder="Ingrese el ID de la Clase" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Fecha de Asistencia">Fecha de Asistencia</label>
+                            <div class="campo-input">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input class="input-text" type="date" id="Fecha de Asistencia" name="Fecha de Asistencia" placeholder="Ingrese la Fecha de Asistencia" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="Asistio">Asistio</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user-check"></i>
+                                <input class="input-text" type="checkbox" id="Asistio" name="Asistio" placeholder="Asistencia del día" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-user-plus"></i> Registrar Asistencia
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
