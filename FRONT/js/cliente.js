@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${cliente.primerNombre || ''} ${cliente.segundoNombre || ''} ${cliente.apellidoPaterno || ''} ${cliente.apellidoMaterno || ''}</td>
                 <td>${cliente.telefono || 'N/A'}</td>
                 <td>${cliente.correo || 'N/A'}</td>
-                <td>${cliente.membresiaActual || 'N/A'}</td> {/* Esta info podría venir resumida o necesitar otra llamada */}
+                <td>${cliente.membresiaActual || 'N/A'}</td>
                 <td>
                     <button class="btn-accion-tabla btn-ver-perfil" data-clienteid="${cliente.clienteID}"><i class="fas fa-eye"></i></button>
                     <button class="btn-accion-tabla btn-editar-cliente" data-clienteid="${cliente.clienteID}"><i class="fas fa-edit"></i></button>

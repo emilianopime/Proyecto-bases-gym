@@ -74,7 +74,7 @@ body {
    ========================================================================== */
 .contenedor {
     margin: 0 auto;
-    max-width: 120rem;
+    max-width: 160rem; /* Aumentado de 120rem a 160rem */
     padding: 2rem;
 }
 
