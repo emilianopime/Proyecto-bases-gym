@@ -195,3 +195,94 @@ body {
     }
 }
 
+/* ==========================================================================
+   Tabla de clientes registrados
+   ========================================================================== */
+
+   .contenedor-BuscarClientes-Tabla {
+    max-width: 120rem;
+    margin: 3rem auto 0;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contenedor-BuscarClientes-Tabla legend {
+    font-size: 2.4rem;
+    color: #ffd764;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.contenedor-BuscarClientes-Tabla input[type="text"] {
+    width: 100%;
+    padding: 1.2rem 1.2rem 1.2rem 4.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.contenedor-BuscarClientes-Tabla input[type="text"]:focus {
+    outline: none;
+    border-color: #ffd764;
+    box-shadow: 0 0 0 2px rgba(255, 215, 100, 0.2);
+}
+
+.contenedor-BuscarClientes-Tabla input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+#tablaClientes {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    font-size: 1.4rem;
+}
+
+#tablaClientes caption {
+    font-size: 1.8rem;
+    color: #ffd764;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+#tablaClientes th,
+#tablaClientes td {
+    padding: 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#tablaClientes th {
+    background: rgba(255, 215, 100, 0.1);
+    color: #ffd764;
+    font-weight: 600;
+}
+
+#tablaClientes tr {
+    transition: background-color 0.3s ease;
+}
+
+#tablaClientes tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive table */
+@media (max-width: 1024px) {
+    .contenedor-BuscarClientes-Tabla {
+        overflow-x: auto;
+        padding: 2rem;
+    }
+    
+    #tablaClientes {
+        min-width: 800px;
+    }
+}
