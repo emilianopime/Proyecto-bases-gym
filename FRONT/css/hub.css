@@ -67,8 +67,8 @@ body {
    ========================================================================== */
 .grid-botones {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(3, 1fr);    /* 3 rows, for equal height cells */
     gap: 20px;
     padding: 20px;
 }
@@ -85,23 +85,39 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 180px;
+    min-height: 180px; /* Default minimum height for buttons */
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
-/* Tamaños específicos para cada botón */
-.boton-hub[href="clientes.html"] {
-    grid-column: span 2;
-    grid-row: span 2;
+/* Tamaños y posiciones específicas para cada botón */
+.boton-hub[href="cliente.html"] { /* Corrected selector to match HTML href */
+    grid-column: 1 / 3; /* Span columns 1 and 2 */
+    grid-row: 1 / 3;    /* Span rows 1 and 2 */
 }
 
-.boton-hub[href="entrenadores.html"],
-.boton-hub[href="membresias.html"],
-.boton-hub[href="clases.html"],
-.boton-hub[href="asistencia.html"],
+.boton-hub[href="entrenadores.html"] {
+    grid-column: 3 / 4; /* Column 3 */
+    grid-row: 1 / 2;    /* Row 1 */
+}
+
+.boton-hub[href="membresias.html"] {
+    grid-column: 3 / 4; /* Column 3 */
+    grid-row: 2 / 3;    /* Row 2 */
+}
+
+.boton-hub[href="clases.html"] {
+    grid-column: 1 / 2; /* Column 1 */
+    grid-row: 3 / 4;    /* Row 3 */
+}
+
+.boton-hub[href="asistencia.html"] {
+    grid-column: 2 / 3; /* Column 2 */
+    grid-row: 3 / 4;    /* Row 3 */
+}
+
 .boton-hub[href="pagos.html"] {
-    grid-column: span 1;
-    grid-row: span 1;
+    grid-column: 3 / 4; /* Column 3 */
+    grid-row: 3 / 4;    /* Row 3 */
 }
 
 .boton-hub:hover {
@@ -118,8 +134,13 @@ body {
 }
 
 /* Ajuste de tamaños de fuente según el tamaño del botón */
-.boton-hub[href="clientes.html"] h2 {
-    font-size: 3.6rem;
+.boton-hub[href="cliente.html"] h2 { /* Corrected selector */
+    font-size: 3.6rem; /* Keep or adjust as needed for the larger button */
+}
+
+/* Ensure other buttons have a consistent font size if not overridden */
+.boton-hub:not([href="cliente.html"]) h2 {
+    font-size: 2.4rem; /* Default size for other buttons */
 }
 
 /* ==========================================================================
@@ -127,13 +148,20 @@ body {
    ========================================================================== */
 @media (max-width: 768px) {
     .grid-botones {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
+        grid-template-columns: 1fr; /* Single column for mobile */
+        grid-template-rows: auto;   /* Auto rows */
     }
 
-    .boton-hub {
-        grid-column: span 1 !important;
-        grid-row: span 1 !important;
+    /* Reset all buttons to stack in a single column on mobile */
+    .boton-hub,
+    .boton-hub[href="cliente.html"],
+    .boton-hub[href="entrenadores.html"],
+    .boton-hub[href="membresias.html"],
+    .boton-hub[href="clases.html"],
+    .boton-hub[href="asistencia.html"],
+    .boton-hub[href="pagos.html"] {
+        grid-column: 1 / -1 !important; /* Span full width of the single column */
+        grid-row: auto !important;      /* Auto placement in rows */
         min-height: 150px;
     }
 
@@ -141,7 +169,7 @@ body {
         font-size: 2rem;
     }
 
-    .boton-hub[href="clientes.html"] h2 {
-        font-size: 2.4rem;
+    .boton-hub[href="cliente.html"] h2 { /* Corrected selector */
+        font-size: 2.4rem; /* Slightly larger for "Clientes" on mobile if desired, or same as others */
     }
-} 
+}
