@@ -14,18 +14,23 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 /* ==========================================================================
-   rutas para las paginas
-   ========================================================================== */
-//    rutas para archivos estaticos
-app.use(express.static(path.join(__dirname, '../FRONT/HTML')))
+rutas para las paginas
+========================================================================== */
+// Servir archivos estáticos (HTML, CSS, JS, imágenes)
+app.use(express.static(path.join(__dirname, '../FRONT')));
 
-//    rutas para login
-   const loginRoutes = require('./routes/login');
-app.use('/', loginRoutes);
+// Redirigir la raíz al login
+app.get('/', (req, res) => {
+  res.redirect('/HTML/login.html');
+});
+
+// rutas para login
+const loginRoutes = require('./routes/login');
+app.use('/api', loginRoutes);
 
 
 
-//    Iniciar servidor
- app.listen(port, () => {
- console.log(`Servidor ejecutándose en http://localhost:${port}`);
- });
+// Iniciar servidor
+app.listen(port, () => {
+  console.log(`Servidor ejecutándose en http://localhost:${port}`);
+});

@@ -15,7 +15,7 @@
             <div class="encabezado-tarjeta">
                 <h2><span class="titulo-resaltado">Gym Manager</span></h2>
             </div>
-            <form action="/login" method="post" class="formulario-login" id="loginForm"> 
+            <form  class="formulario-login" id="loginForm"> 
                 <div class="grupo-formulario">
                     <label class="etiqueta-login" for="username">Usuario</label>
                     <input type="text" id="username" name="username" required autocomplete="username">
@@ -25,8 +25,10 @@
                     <input type="password" id="password" name="password" required autocomplete="current-password">
                 </div>
                 <button type="submit" class="boton-login">Iniciar Sesión</button>
+                <div id="message"></div>
             </form>
         </div>
     </div>
+    <script src="../js/login.js"></script>
 </body>
 </html> 

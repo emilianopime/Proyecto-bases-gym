@@ -11,13 +11,12 @@ exports.login = async (req, res) => {
     );
 
     if (result.rows.length > 0) {
-      res.redirect('/home.html');
+      res.json({ userId: result.rows[0][0], message: "Login exitoso" });
     } else {
-      res.redirect('/login.html');
-    }
-  } catch (err) {
+      res.status(401).json({ message: "Usuario o contraseña incorrectos" });
+    }  } catch (err) {
     console.error(err);
-    res.send("Error del servidor");
+    res.status(500).json({ message: "Error del servidor: " + err.message });
   } finally {
     if (connection) await connection.close();
   }
