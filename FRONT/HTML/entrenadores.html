@@ -1,0 +1,97 @@
+<!--h1 se usa para titulares solo llega hasta h6 y solo debe aver un h1-->
+<!--<br/> Se usa para espacios-->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!--UTF-8; Indica que que se usaran tildes y caracteres especiales-->
+    <meta charset="UTF-8">
+    <!--Le indica al navegador comó debe mostrar la pagina en pantallas más pequeñas como celulares, etc-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Entrenador</title>
+    <link rel="stylesheet" href="../css/entrenadores.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+    </head>
+
+    <body>
+        <header class="encabezado">
+        <h1 class="encabezado-Titulo">Registro Entrenador</h1>
+        <nav class="encabezado-Nav">
+            <a href="hub.html" class="btn-regresar">
+                <i class="fas fa-arrow-left"></i> Regresar a inicio
+            </a>
+        </nav>
+    </header>
+    <main class="contenedor">
+        <div class="contenedor-RegistrarEntrenador">
+            <form class="formulario" id="formulario-entrenador">
+                <fieldset>
+                    <legend>Datos del Entrenador</legend>
+                    <div class="contenedor-RegistrarEntrenador-Campos">
+                        <div class="campo">
+                            <label for="nombre">Primer Nombre</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="Primer nombre" name="Primer nombre" placeholder="Ingrese su primer nombre" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="segundo nombre">Segundo Nombre</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="Segundo Nombre" name="Segundo Nombre" placeholder="Ingrese su segundo nombre" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="apellido paterno">Apellido Paterno</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="Apellido Paterno" name="Apellido Paterno" placeholder="Ingrese su Apellido Paterno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="apellido materno">Apellido Materno</label>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="Apellido Materno" name="Apellido Materno" placeholder="Ingrese su Apellido Materno" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <laber for="especialidad">Especialidad</laber>
+                            <div class="campo-input">
+                                <i class="fas fa-user"></i>
+                                <input class="input-text" type="text" id="Especialidad" name="Especialidad" placeholder="Ingrese su Especialidad" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="telefono">Teléfono</label>
+                            <div class="campo-input">
+                                <i class="fas fa-phone"></i>
+                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingrese su número telefónico" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <label for="correo">Correo Electrónico</label>
+                            <div class="campo-input">
+                                <i class="fas fa-envelope"></i>
+                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required>
+                            </div>
+                        </div>
+
+                        <div class="campo">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-user-plus"></i> Registrar Entrenador
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
