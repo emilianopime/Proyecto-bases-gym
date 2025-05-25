@@ -69,7 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const datosCliente = Object.fromEntries(formData.entries());
             const clienteIdParaActualizar = formularioCliente.dataset.editingId;
 
-            console.log("Datos del formulario:", datosCliente);
+            console.log("Datos del formulario principal (formularioCliente):", datosCliente); // Log all data
+            console.log("Membresía ID seleccionada (formularioCliente):", formData.get('membresia')); // Specifically log membresia
             
             let url = '/api/clientes'; // URL para crear
             let method = 'POST';
@@ -94,13 +95,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resultado = await response.json();
                 console.log('Respuesta del servidor:', resultado);
                 alert(clienteIdParaActualizar ? 'Cliente actualizado con éxito' : 'Cliente registrado con éxito');
-                
-
-                cargarClientes(); // Recargar la lista
+                    cargarClientes(); // Recargar la lista
                 mostrarSeccion(seccionListaClientes);
                 formularioCliente.reset();
                 delete formularioCliente.dataset.editingId;
                 document.querySelector('#seccionRegistrarCliente legend').textContent = "Datos del Nuevo Cliente";
+                formularioCliente.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Guardar Cliente';
                 formularioCliente.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Guardar Cliente';
 
 
@@ -200,10 +200,15 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', function() {
                 cargarYMostrarPerfilCliente(this.dataset.clienteid);
             });
-        });
-        document.querySelectorAll('.btn-editar-cliente').forEach(button => {
+        });        document.querySelectorAll('.btn-editar-cliente').forEach(button => {
             button.addEventListener('click', function() {
                 prepararEdicionCliente(this.dataset.clienteid);
+            });
+        });
+        
+        document.querySelectorAll('.btn-asignar-membresia').forEach(button => {
+            button.addEventListener('click', function() {
+                abrirFormularioAsignarMembresia(this.dataset.clienteid);
             });
         });
         // TODO: Añadir listeners para btn-asignar-membresia y otros si son necesarios
@@ -228,12 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 perfilApellidoMaterno.textContent = cliente.apellidoMaterno || 'N/A';
                 perfilFechaNacimiento.textContent = cliente.fechaNacimiento ? cliente.fechaNacimiento : 'N/A'; // Ya viene como YYYY-MM-DD
                 perfilTelefono.textContent = cliente.telefono || 'N/A';
-                perfilCorreo.textContent = cliente.correo || 'N/A';
-                perfilGenero.textContent = cliente.genero || 'N/A'; 
+                perfilCorreo.textContent = cliente.correo || 'N/A';                perfilGenero.textContent = cliente.genero || 'N/A'; 
                 perfilFechaRegistro.textContent = cliente.fechaRegistro ? cliente.fechaRegistro : 'N/A'; // Ya viene como YYYY-MM-DD
                 
-                // TODO: Cargar datos para las otras pestañas (Membresías, Asistencia, Notas)
-                // cargarMembresiasCliente(clienteId);
+                // Cargar datos para las otras pestañas (Membresías, Asistencia, Notas)
+                cargarMembresiasCliente(clienteId);
                 // cargarAsistenciaCliente(clienteId);
                 // cargarNotasCliente(clienteId);
                 
@@ -280,6 +284,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('correo').value = clienteAEditar.correo || '';
                 document.getElementById('genero').value = clienteAEditar.genero || '';
 
+                // Seleccionar la membresía actual del cliente en el dropdown
+                const selectMembresia = document.getElementById('membresia');
+                if (clienteAEditar.currentMembresiaID) {
+                    selectMembresia.value = clienteAEditar.currentMembresiaID;
+                } else {
+                    selectMembresia.value = ""; // Si no tiene membresía activa/pendiente, seleccionar la opción por defecto
+                }
+
                 formularioCliente.dataset.editingId = clienteId;
                 document.querySelector('#seccionRegistrarCliente legend').textContent = "Editar Datos del Cliente";
                 formularioCliente.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Actualizar Cliente';
@@ -323,23 +335,173 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-    }
-
-    // --- INICIALIZACIÓN ---
+    }    // --- INICIALIZACIÓN ---
     mostrarSeccion(seccionListaClientes);
     cargarClientes(); // Intentar cargar los clientes al iniciar
+    cargarMembresiasDisponibles(); // Cargar las membresías disponibles para el formulario
+    
+    // Hacer la función cargarClientes disponible globalmente para actualizaciones desde otras ventanas
+    window.cargarClientes = cargarClientes;
 
-    // Asegurar que los botones de las pestañas tengan data-tab para el JS
-    document.querySelectorAll('.perfil-tabs .tablink').forEach(btn => {
-        // Si ya tienen data-tab por el HTML, esto no es estrictamente necesario,
-        // pero es bueno para asegurar consistencia si se generan dinámicamente en el futuro.
-        const onclickAttr = btn.getAttribute('onclick'); // Si aún usas onclick
-        if (onclickAttr && !btn.dataset.tab) {
-            const tabNameMatch = onclickAttr.match(/'([^']+)'/);
-            if (tabNameMatch && tabNameMatch[1]) {
-                btn.dataset.tab = tabNameMatch[1];
-            }
+    // --- FUNCIONES PARA MEMBRESÍAS ---
+    async function cargarMembresiasDisponibles() {
+        try {
+            const response = await fetch('/api/membresias-disponibles');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const membresias = await response.json();
+            poblarSelectMembresias(membresias);
+        } catch (error) {
+            console.error('Error al cargar membresías disponibles:', error);
         }
-    });
+    }
 
+    function poblarSelectMembresias(membresias) {
+        const selectMembresia = document.getElementById('membresia');
+        if (!selectMembresia) return;
+
+        // Limpiar opciones existentes excepto la primera
+        while (selectMembresia.children.length > 1) {
+            selectMembresia.removeChild(selectMembresia.lastChild);
+        }
+
+        membresias.forEach(membresia => {
+            const option = document.createElement('option');
+            option.value = membresia.membresiaID;
+            option.textContent = `${membresia.nombre} - $${membresia.precio} (${membresia.duracionDias} días)`;
+            selectMembresia.appendChild(option);
+        });
+    }
+
+    // Función para cargar y mostrar las membresías de un cliente
+    async function cargarMembresiasCliente(clienteId) {
+        try {
+            const response = await fetch(`/api/clientes/${clienteId}/membresias`);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const membresias = await response.json();
+            mostrarMembresiasCliente(membresias);
+        } catch (error) {
+            console.error(`Error al cargar membresías del cliente ${clienteId}:`, error);
+            listaMembresiasCliente.innerHTML = '<p><em>Error al cargar membresías del cliente.</em></p>';
+        }
+    }
+
+    function mostrarMembresiasCliente(membresias) {
+        if (!listaMembresiasCliente) return;
+
+        if (!membresias || membresias.length === 0) {
+            listaMembresiasCliente.innerHTML = '<p><em>Este cliente no tiene membresías asignadas.</em></p>';
+            return;
+        }
+
+        let html = '<div class="membresias-cliente">';
+        membresias.forEach(membresia => {
+            const estadoClass = membresia.estado.toLowerCase();
+            html += `
+                <div class="membresia-item ${estadoClass}">
+                    <h4>${membresia.nombreMembresia}</h4>
+                    <p><strong>Estado:</strong> <span class="estado-${estadoClass}">${membresia.estado}</span></p>
+                    <p><strong>Período:</strong> ${membresia.fechaInicio} - ${membresia.fechaFin}</p>
+                    <p><strong>Monto Pagado:</strong> $${membresia.montoPagado || 'N/A'}</p>
+                    <p><strong>Método de Pago:</strong> ${membresia.tipoPago}</p>
+                    ${membresia.notas ? `<p><strong>Notas:</strong> ${membresia.notas}</p>` : ''}
+                </div>
+            `;
+        });
+        html += '</div>';
+        listaMembresiasCliente.innerHTML = html;
+    }
+
+    // Agregar event listener para el botón de asignar nueva membresía
+    const btnAbrirFormMembresia = document.getElementById('btnAbrirFormMembresia');
+    if (btnAbrirFormMembresia) {
+        btnAbrirFormMembresia.addEventListener('click', function() {
+            const clienteId = perfilClienteID.textContent;
+            if (clienteId && clienteId !== 'N/A') {
+                abrirFormularioAsignarMembresia(clienteId);
+            } else {
+                alert('Error: No se puede determinar el ID del cliente.');
+            }
+        });
+    }
+
+    function abrirFormularioAsignarMembresia(clienteId) {
+        // Crear modal dinámico para asignar membresía
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Asignar Nueva Membresía</h3>
+                    <button class="btn-cerrar-modal" onclick="this.closest('.modal-overlay').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form class="modal-form" id="form-asignar-membresia">
+                    <div class="campo">
+                        <label for="nuevaMembresia">Tipo de Membresía</label>
+                        <select id="nuevaMembresia" name="membresiaId" required>
+                            <option value="">-- Seleccionar Membresía --</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="notasMembresia">Notas (Opcional)</label>
+                        <textarea id="notasMembresia" name="notas" placeholder="Observaciones adicionales..."></textarea>
+                    </div>
+                    <div class="campo-botones">
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-save"></i> Asignar Membresía
+                        </button>
+                        <button type="button" class="btn-cancelar" onclick="this.closest('.modal-overlay').remove()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Cargar membresías en el select del modal
+        fetch('/api/membresias-disponibles')
+            .then(response => response.json())
+            .then(membresias => {
+                const select = modal.querySelector('#nuevaMembresia');
+                membresias.forEach(membresia => {
+                    const option = document.createElement('option');
+                    option.value = membresia.membresiaID;
+                    option.textContent = `${membresia.nombre} - $${membresia.precio} (${membresia.duracionDias} días)`;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error al cargar membresías:', error));
+
+        // Agregar event listener al formulario
+        const form = modal.querySelector('#form-asignar-membresia');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            console.log("Datos del modal de asignación de membresía:", data); // Log all data from modal
+            console.log("Membresía ID seleccionada (modal):", formData.get('membresiaId')); // Specifically log membresiaId from modal
+            
+            try {
+                const response = await fetch(`/api/clientes/${clienteId}/membresias`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al asignar membresía');
+                }                alert('Membresía asignada con éxito');
+                modal.remove();
+                cargarMembresiasCliente(clienteId); // Recargar la lista de membresías
+                cargarClientes(); // Recargar la tabla de clientes para mostrar la nueva membresía
+            } catch (error) {
+                console.error('Error al asignar membresía:', error);
+                alert('Error al asignar membresía: ' + error.message);
+            }
+        });
+    }
 }); // Fin de DOMContentLoaded

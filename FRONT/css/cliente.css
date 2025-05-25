@@ -515,3 +515,213 @@ body {
         min-width: 140px;
     }
 }
+
+/* ==========================================================================
+   Estilos para Membresías de Cliente
+   ========================================================================== */
+
+.membresias-cliente {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.membresia-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+    border-left: 4px solid #ffd764;
+}
+
+.membresia-item.activa {
+    border-left-color: #4CAF50;
+}
+
+.membresia-item.vencida {
+    border-left-color: #f44336;
+}
+
+.membresia-item.congelada {
+    border-left-color: #FF9800;
+}
+
+.membresia-item.cancelada {
+    border-left-color: #9E9E9E;
+}
+
+.membresia-item.pendiente {
+    border-left-color: #2196F3;
+}
+
+.membresia-item h4 {
+    color: #ffd764;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.membresia-item p {
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+}
+
+.estado-activa {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.estado-vencida {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.estado-congelada {
+    color: #FF9800;
+    font-weight: bold;
+}
+
+.estado-cancelada {
+    color: #9E9E9E;
+    font-weight: bold;
+}
+
+.estado-pendiente {
+    color: #2196F3;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   Estilos para Modal de Asignar Membresía
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 1rem;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 215, 100, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    border-bottom: 1px solid rgba(255, 215, 100, 0.1);
+}
+
+.modal-header h3 {
+    color: #ffd764;
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.btn-cerrar-modal {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-cerrar-modal:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-form {
+    padding: 2rem;
+}
+
+.modal-form .campo {
+    margin-bottom: 2rem;
+}
+
+.modal-form label {
+    display: block;
+    color: #ffd764;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    font-size: 1.4rem;
+}
+
+.modal-form select,
+.modal-form textarea {
+    width: 100%;
+    padding: 1.2rem;
+    border: 1px solid rgba(255, 215, 100, 0.3);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    font-size: 1.4rem;
+    transition: border-color 0.3s ease;
+}
+
+.modal-form select:focus,
+.modal-form textarea:focus {
+    outline: none;
+    border-color: #ffd764;
+    box-shadow: 0 0 0 2px rgba(255, 215, 100, 0.2);
+}
+
+.modal-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.campo-botones {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.campo-botones .btn-submit,
+.campo-botones .btn-cancelar {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.campo-botones .btn-submit {
+    background: linear-gradient(135deg, #ffd764 0%, #ffb347 100%);
+    color: #2c3e50;
+}
+
+.campo-botones .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 100, 0.4);
+}
+
+.campo-botones .btn-cancelar {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.campo-botones .btn-cancelar:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

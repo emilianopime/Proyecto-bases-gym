@@ -130,6 +130,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 editandoId = null;
                 cargarMembresiasCompleto();
                 mostrarSeccion('lista');
+                
+                // Notificar a la ventana padre para actualizar clientes si está abierta
+                if (window.opener && !window.opener.closed) {
+                    try {
+                        if (typeof window.opener.cargarClientes === 'function') {
+                            window.opener.cargarClientes();
+                        }
+                    } catch (e) {
+                        console.log('No se pudo actualizar la ventana de clientes:', e);
+                    }
+                }
             } catch (error) {
                 console.error('Error al guardar membresía:', error);
                 alert(`Error al guardar membresía: ${error.message}`);
