@@ -246,8 +246,22 @@ async function actualizarPago(req, res) {
         const { tipoPagoId, montoPagado, estado, notas } = req.body;
         
         connection = await oracledb.getConnection(dbConfig);
+
+        // Verificar si el pago es editable
+        const pagoActualResult = await connection.execute(`
+            SELECT Estado FROM ClientesMembresias WHERE ClienteMembresiaID = :clienteMembresiaId
+        `, { clienteMembresiaId });
+
+        if (pagoActualResult.rows.length === 0) {
+            return res.status(404).json({ error: 'Registro de pago no encontrado' });
+        }
+
+        const estadoActual = pagoActualResult.rows[0][0];
+        if (['Activa', 'Vencida', 'Cancelada'].includes(estadoActual)) {
+            return res.status(403).json({ error: 'Este pago no se puede modificar porque la membresía asociada ya está activa, vencida o cancelada.' });
+        }
         
-        // Verificar que el registro existe
+        // Verificar que el registro existe y obtener precio de membresía
         const existeResult = await connection.execute(`
             SELECT cm.ClienteMembresiaID, m.Precio 
             FROM ClientesMembresias cm
@@ -506,38 +520,27 @@ async function buscarClientes(req, res) {
     }
 }
 
-// Obtener membresías disponibles para pago
+// Obtener membresías disponibles para el formulario de pago
 async function getMembresiasDisponibles(req, res) {
     let connection;
     try {
         connection = await oracledb.getConnection(dbConfig);
-        
         const result = await connection.execute(`
-            SELECT 
-                MembresiaID,
-                Nombre,
-                Descripcion,
-                Precio,
-                DuracionDias,
-                AccesoPiscina,
-                AccesoClases
-            FROM Membresias
-            ORDER BY Precio ASC
+            SELECT MembresiaID, Nombre, Precio, DuracionDias 
+            FROM Membresias 
+            ORDER BY Nombre
         `);
         
         const membresias = result.rows.map(row => ({
             membresiaId: row[0],
             nombre: row[1],
-            descripcion: row[2],
-            precio: row[3],
-            duracionDias: row[4],
-            accesoPiscina: row[5] === 1,
-            accesoClases: row[6] === 1
+            precio: row[2],
+            duracionDias: row[3]
         }));
         
         res.json(membresias);
     } catch (error) {
-        console.error('Error al obtener membresías:', error);
+        console.error('Error al obtener membresías disponibles:', error);
         res.status(500).json({ 
             error: 'Error interno del servidor',
             details: error.message 

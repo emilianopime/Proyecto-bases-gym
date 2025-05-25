@@ -1,6 +1,5 @@
 // Script para la funcionalidad del Módulo de Pagos
-document.addEventListener('DOMContentLoaded', function() {
-    // === ELEMENTOS DEL DOM ===
+document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS DEL DOM ===
     const btnRegistrarPago = document.getElementById('btnRegistrarPago');
     const btnFirstPayment = document.getElementById('btnFirstPayment');
     const btnCancelarPago = document.getElementById('btnCancelarPago');
@@ -9,6 +8,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const seccionListaPagos = document.getElementById('seccionListaPagos');
     const seccionFormularioPago = document.getElementById('seccionFormularioPago');
+    
+    // Validar elementos críticos
+    if (!seccionListaPagos) {
+        console.error('CRITICAL ERROR: seccionListaPagos not found');
+        return;
+    }
+    if (!seccionFormularioPago) {
+        console.error('CRITICAL ERROR: seccionFormularioPago not found');
+        return;
+    }
+    if (!btnRegistrarPago) {
+        console.error('CRITICAL ERROR: btnRegistrarPago not found');
+        return;
+    }
     
     const formularioPago = document.getElementById('formulario-pago');
     const tablaPagos = document.getElementById('tablaPagos');
@@ -98,17 +111,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatearPeriodo(fechaInicioISO, fechaFinISO) {
         if (!fechaInicioISO || !fechaFinISO) return 'N/A';
         return `${formatearFecha(fechaInicioISO)} - ${formatearFecha(fechaFinISO)}`;
-    }
-
-    // === FUNCIONES DE NAVEGACIÓN ===
+    }    // === FUNCIONES DE NAVEGACIÓN ===
     function mostrarSeccion(seccion) {
-        seccionListaPagos.style.display = 'none';
-        seccionFormularioPago.style.display = 'none';
+        console.log(`Mostrando sección: ${seccion}`);
         
-        if (seccion === 'lista') {
-            seccionListaPagos.style.display = 'block';
-        } else if (seccion === 'formulario') {
-            seccionFormularioPago.style.display = 'block';
+        try {
+            // Método 1: Usar clases
+            seccionListaPagos.classList.add('hidden');
+            seccionFormularioPago.classList.add('hidden');
+            
+            // Método 2: Usar estilos inline como respaldo
+            seccionListaPagos.style.display = 'none';
+            seccionFormularioPago.style.display = 'none';
+            
+            // Mostrar la sección solicitada
+            if (seccion === 'lista') {
+                seccionListaPagos.classList.remove('hidden');
+                seccionListaPagos.style.display = 'block';
+                console.log('Sección lista mostrada');
+            } else if (seccion === 'formulario') {
+                seccionFormularioPago.classList.remove('hidden');
+                seccionFormularioPago.style.display = 'block';
+                console.log('Sección formulario mostrada');
+            }
+            
+            // Verificar el estado final
+            console.log('Estado final - Lista display:', window.getComputedStyle(seccionListaPagos).display);
+            console.log('Estado final - Formulario display:', window.getComputedStyle(seccionFormularioPago).display);
+            
+        } catch (error) {
+            console.error('Error en mostrarSeccion:', error);
         }
     }
     
@@ -254,6 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         pagos.forEach(pago => {
             const fila = document.createElement('tr');
+            const esEditable = !(pago.estado === 'Activa' || pago.estado === 'Vencida' || pago.estado === 'Cancelada');
             fila.innerHTML = `
                 <td>${pago.nombreCliente || 'N/A'}</td>
                 <td>${pago.nombreMembresia || 'N/A'}</td>
@@ -271,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <button class="btn-table" onclick="verDetallePago(${pago.clienteMembresiaId})" title="Ver detalles">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn-table" onclick="editarPago(${pago.clienteMembresiaId})" title="Editar">
+                        <button class="btn-table" onclick="editarPago(${pago.clienteMembresiaId})" title="Editar" ${!esEditable ? 'disabled' : ''}>
                             <i class="fas fa-edit"></i>
                         </button>
                     </div>
@@ -294,6 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         pagos.forEach(pago => {
             const tarjeta = document.createElement('div');
             tarjeta.className = 'payment-card';
+            const esEditable = !(pago.estado === 'Activa' || pago.estado === 'Vencida' || pago.estado === 'Cancelada');
             tarjeta.innerHTML = `
                 <div class="card-header">
                     <h3>${pago.nombreCliente || 'Cliente N/A'}</h3>
@@ -329,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="btn-secondary" onclick="verDetallePago(${pago.clienteMembresiaId})">
                         <i class="fas fa-eye"></i> Ver Detalles
                     </button>
-                    <button class="btn-primary" onclick="editarPago(${pago.clienteMembresiaId})">
+                    <button class="btn-primary" onclick="editarPago(${pago.clienteMembresiaId})" ${!esEditable ? 'disabled' : ''}>
                         <i class="fas fa-edit"></i> Editar
                     </button>
                 </div>
@@ -569,21 +603,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // === EVENT LISTENERS ===
-    function inicializarEventListeners() {
-        if (btnRegistrarPago) {
+    function inicializarEventListeners() {        if (btnRegistrarPago) {
             btnRegistrarPago.addEventListener('click', function() {
                 console.log("Botón 'Registrar Nuevo Pago' clickeado");
+                console.log('Estado antes - Lista:', !seccionListaPagos.classList.contains('hidden'), 'Formulario:', !seccionFormularioPago.classList.contains('hidden'));
+                
                 editandoPago = null;
-                limpiarFormulario();
+                
+                // Mostrar formulario PRIMERO
                 mostrarSeccion('formulario');
-                formLegend.textContent = 'Registrar Nuevo Pago';
-                // Asegurarse que el botón de submit del formulario diga "Registrar Pago"
-                const submitButton = formularioPago.querySelector('button[type="submit"]');
-                if (submitButton) {
-                    submitButton.innerHTML = '<i class="fas fa-save"></i> Registrar Pago';
-                }
-                console.log("Mostrando sección formulario y limpiando el mismo.");
+                
+                // Después limpiar y configurar
+                setTimeout(() => {
+                    limpiarFormulario();
+                    formLegend.textContent = 'Registrar Nuevo Pago';
+                    
+                    // Asegurarse que el botón de submit del formulario diga "Registrar Pago"
+                    const submitButton = formularioPago.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.innerHTML = '<i class="fas fa-save"></i> Registrar Pago';
+                    }
+                    
+                    console.log('Estado después - Lista:', !seccionListaPagos.classList.contains('hidden'), 'Formulario:', !seccionFormularioPago.classList.contains('hidden'));
+                    console.log("Formulario mostrado y configurado.");
+                }, 10);
             });
+        } else {
+            console.error('btnRegistrarPago no encontrado en el DOM');
         }
 
         if (btnFirstPayment) {
@@ -642,10 +688,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
-    // === INICIALIZACIÓN ===
+      // === INICIALIZACIÓN ===
     function init() {
         console.log("Inicializando módulo de pagos...");
+        
+        // Verificar elementos críticos
+        console.log('btnRegistrarPago encontrado:', !!btnRegistrarPago);
+        console.log('seccionListaPagos encontrado:', !!seccionListaPagos);
+        console.log('seccionFormularioPago encontrado:', !!seccionFormularioPago);
+        console.log('formularioPago encontrado:', !!formularioPago);
+        
         mostrarSeccion('lista'); // Mostrar lista por defecto
         toggleVista(); // Configurar vista inicial (tabla o tarjetas)
         

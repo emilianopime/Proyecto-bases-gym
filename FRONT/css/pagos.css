@@ -11,6 +11,30 @@
     box-sizing: border-box;
 }
 
+/* Clase de utilidad para ocultar elementos */
+.hidden {
+    display: none !important;
+}
+
+/* Clases para secciones principales */
+.content-section {
+    display: block;
+    width: 100%;
+}
+
+.content-section.hidden {
+    display: none !important;
+}
+
+.form-section {
+    display: block;
+    width: 100%;
+}
+
+.form-section.hidden {
+    display: none !important;
+}
+
 :root {
     --primary-color: #ffd764;
     --secondary-color: #18181b;

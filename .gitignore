@@ -1,1 +1,9 @@
 node_modules/
+
+# Test files (temporary debugging files)
+test_pagos_debug.html
+FRONT/test_button.html
+FRONT/test_button_direct.html
+FRONT/test_pagos_debug.html
+test_api_complete.html
+test_db_connection.js
