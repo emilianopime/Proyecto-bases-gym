@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Pagos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Test del Módulo de Pagos</h1>
+    
+    <div class="test-section">
+        <h2>1. Test de Búsqueda de Clientes</h2>
+        <button onclick="testBuscarClientes()">Buscar Cliente "Emiliano"</button>
+        <div id="result-buscar-clientes"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Test de Membresías Disponibles</h2>
+        <button onclick="testMembresiasDisponibles()">Obtener Membresías</button>
+        <div id="result-membresias"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Test de Tipos de Pago</h2>
+        <button onclick="testTiposPago()">Obtener Tipos de Pago</button>
+        <div id="result-tipos-pago"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test de Registro de Pago</h2>
+        <button onclick="testRegistrarPago()">Registrar Nuevo Pago</button>
+        <div id="result-registrar-pago"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Test de Actualización de Pago</h2>
+        <input type="number" id="pago-id" placeholder="ID del pago a actualizar" value="17">
+        <button onclick="testActualizarPago()">Actualizar Pago</button>
+        <div id="result-actualizar-pago"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>6. Test de Todos los Pagos</h2>
+        <button onclick="testTodosPagos()">Obtener Todos los Pagos</button>
+        <div id="result-todos-pagos"></div>
+    </div>
+
+    <script>
+        async function testBuscarClientes() {
+            const resultDiv = document.getElementById('result-buscar-clientes');
+            try {
+                const response = await fetch('/api/pagos/buscar-clientes?termino=Emiliano');
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✓ Success</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testMembresiasDisponibles() {
+            const resultDiv = document.getElementById('result-membresias');
+            try {
+                const response = await fetch('/api/pagos/membresias-disponibles');
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✓ Success</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testTiposPago() {
+            const resultDiv = document.getElementById('result-tipos-pago');
+            try {
+                const response = await fetch('/api/pagos/tipos-pago');
+                const data = await response.json();
+                resultDiv.innerHTML = `<div class="success">✓ Success</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testRegistrarPago() {
+            const resultDiv = document.getElementById('result-registrar-pago');
+            try {
+                const pagoData = {
+                    clienteId: 1,
+                    membresiaId: 5,
+                    tipoPagoId: 1,
+                    montoPagado: 30,
+                    notas: "Pago de prueba desde test HTML"
+                };
+                
+                const response = await fetch('/api/pagos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(pagoData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✓ Pago registrado correctamente</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ Error: ${data.error || data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testActualizarPago() {
+            const resultDiv = document.getElementById('result-actualizar-pago');
+            const pagoId = document.getElementById('pago-id').value;
+            
+            if (!pagoId) {
+                resultDiv.innerHTML = `<div class="error">✗ Por favor ingrese un ID de pago</div>`;
+                return;
+            }
+            
+            try {
+                const pagoData = {
+                    tipoPagoId: 2,
+                    montoPagado: 40,
+                    notas: "Pago actualizado desde test HTML"
+                };
+                
+                const response = await fetch(`/api/pagos/${pagoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(pagoData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✓ Pago actualizado correctamente</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">✗ Error: ${data.error || data.message}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testTodosPagos() {
+            const resultDiv = document.getElementById('result-todos-pagos');
+            try {
+                const response = await fetch('/api/pagos');
+                const data = await response.json();
+                const limitedData = data.slice(0, 3); // Solo mostrar los primeros 3
+                resultDiv.innerHTML = `<div class="success">✓ Success (mostrando 3 de ${data.length} pagos)</div><pre>${JSON.stringify(limitedData, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">✗ Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -51,7 +51,55 @@ document.addEventListener('DOMContentLoaded', function() {
     let clienteActual = null;
     let editandoPago = null;
     let timeoutBusqueda = null;
-    
+
+    // === FUNCIONES DE UI HELPERS ===
+    function mostrarCargando(mostrar) {
+        if (loadingPagos) {
+            loadingPagos.style.display = mostrar ? 'flex' : 'none';
+        }
+    }
+
+    function mostrarEstadoVacio(mostrar) {
+        if (emptyStatePagos) {
+            emptyStatePagos.style.display = mostrar ? 'flex' : 'none';
+        }
+    }
+
+    function mostrarError(mensaje) {
+        // Implement a more sophisticated error display if needed (e.g., a toast notification)
+        console.error(mensaje);
+        alert(mensaje); // Simple alert for now
+    }
+
+    function mostrarExito(mensaje) {
+        // Implement a more sophisticated success display (e.g., a toast notification)
+        console.log(mensaje);
+        alert(mensaje); // Simple alert for now
+    }
+
+    function formatearFecha(fechaISO) {
+        if (!fechaISO) return 'N/A';
+        try {
+            const fecha = new Date(fechaISO);
+            // Ajustar por la zona horaria local si la fecha viene en UTC y se interpreta mal
+            const userTimezoneOffset = fecha.getTimezoneOffset() * 60000;
+            const correctedDate = new Date(fecha.getTime() + userTimezoneOffset);
+            
+            const dia = String(correctedDate.getDate()).padStart(2, '0');
+            const mes = String(correctedDate.getMonth() + 1).padStart(2, '0'); // Meses son 0-indexados
+            const anio = correctedDate.getFullYear();
+            return `${dia}/${mes}/${anio}`;
+        } catch (e) {
+            console.error("Error formateando fecha:", fechaISO, e);
+            return 'Fecha inválida';
+        }
+    }
+
+    function formatearPeriodo(fechaInicioISO, fechaFinISO) {
+        if (!fechaInicioISO || !fechaFinISO) return 'N/A';
+        return `${formatearFecha(fechaInicioISO)} - ${formatearFecha(fechaFinISO)}`;
+    }
+
     // === FUNCIONES DE NAVEGACIÓN ===
     function mostrarSeccion(seccion) {
         seccionListaPagos.style.display = 'none';
@@ -311,15 +359,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
-    async function buscarClientes(query) {
+      async function buscarClientes(query) {
         if (!query || query.length < 2) {
             listaClientes.classList.add('hidden');
             return;
         }
         
         try {
-            const response = await fetch(`/api/pagos/buscar-clientes?q=${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/pagos/buscar-clientes?termino=${encodeURIComponent(query)}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             
             const clientes = await response.json();
@@ -438,8 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 montoPagar.value = precio;
             }
         });
-        
-        // Validar formulario al enviar
+          // Validar formulario al enviar
         formularioPago.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -459,10 +505,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 notas: formData.get('notas') || null
             };
             
+            // Debug: Log de datos del pago
+            console.log('Datos del pago a enviar:', pagoData);
+            
+            // Validaciones adicionales
+            if (!pagoData.membresiaId) {
+                mostrarError('Debe seleccionar una membresía');
+                return;
+            }
+            
+            if (!pagoData.montoPagado || pagoData.montoPagado <= 0) {
+                mostrarError('El monto debe ser mayor a cero');
+                return;
+            }
+            
+            if (!pagoData.tipoPagoId) {
+                mostrarError('Debe seleccionar un método de pago');
+                return;
+            }
+            
             try {
                 let response;
                 
                 if (editandoPago) {
+                    console.log('Actualizando pago ID:', editandoPago);
                     response = await fetch(`/api/pagos/${editandoPago}`, {
                         method: 'PUT',
                         headers: {
@@ -471,6 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify(pagoData)
                     });
                 } else {
+                    console.log('Registrando nuevo pago');
                     response = await fetch('/api/pagos', {
                         method: 'POST',
                         headers: {
@@ -482,8 +549,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Error al procesar el pago');
+                    console.error('Error del servidor:', errorData);
+                    throw new Error(errorData.error || errorData.message || 'Error al procesar el pago');
                 }
+                
+                const result = await response.json();
+                console.log('Respuesta del servidor:', result);
                 
                 mostrarExito(editandoPago ? 'Pago actualizado correctamente' : 'Pago registrado correctamente');
                 limpiarFormulario();
@@ -497,205 +568,200 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // === FUNCIONES GLOBALES (para botones en HTML) ===
-    window.verDetallePago = async function(clienteMembresiaId) {
-        try {
-            const pago = pagosData.find(p => p.clienteMembresiaId === clienteMembresiaId);
-            if (!pago) {
-                mostrarError('No se encontraron los detalles del pago');
-                return;
-            }
-            
-            const detallePagoContent = document.getElementById('detalle-pago-content');
-            detallePagoContent.innerHTML = `
-                <div class="payment-details">
-                    <div class="detail-group">
-                        <h4><i class="fas fa-user"></i> Información del Cliente</h4>
-                        <p><strong>Nombre:</strong> ${pago.nombreCliente}</p>
-                        <p><strong>Correo:</strong> ${pago.correoCliente || 'N/A'}</p>
-                        <p><strong>Teléfono:</strong> ${pago.telefonoCliente || 'N/A'}</p>
-                    </div>
-                    <div class="detail-group">
-                        <h4><i class="fas fa-id-card"></i> Información de la Membresía</h4>
-                        <p><strong>Tipo:</strong> ${pago.nombreMembresia}</p>
-                        <p><strong>Precio:</strong> $${(pago.precioMembresia || 0).toFixed(2)}</p>
-                        <p><strong>Período:</strong> ${formatearPeriodo(pago.fechaInicio, pago.fechaFin)}</p>
-                    </div>
-                    <div class="detail-group">
-                        <h4><i class="fas fa-credit-card"></i> Información del Pago</h4>
-                        <p><strong>Monto Pagado:</strong> $${(pago.montoPagado || 0).toFixed(2)}</p>
-                        <p><strong>Estado:</strong> <span class="payment-status status-${(pago.estadoPago || '').toLowerCase().replace(' ', '')}">${pago.estadoPago}</span></p>
-                        <p><strong>Método:</strong> ${pago.tipoPago || 'N/A'}</p>
-                        <p><strong>Fecha:</strong> ${formatearFecha(pago.fechaPago)}</p>
-                        ${pago.notas ? `<p><strong>Notas:</strong> ${pago.notas}</p>` : ''}
-                    </div>
-                </div>
-            `;
-            
-            modalDetallePago.classList.remove('hidden');
-            
-        } catch (error) {
-            console.error('Error al mostrar detalles:', error);
-            mostrarError('Error al cargar los detalles del pago');
-        }
-    };
-    
-    window.editarPago = function(clienteMembresiaId) {
-        const pago = pagosData.find(p => p.clienteMembresiaId === clienteMembresiaId);
-        if (!pago) {
-            mostrarError('No se encontró el pago para editar');
-            return;
-        }
-        
-        editandoPago = clienteMembresiaId;
-        formLegend.textContent = 'Editar Pago';
-        
-        // Simular selección de cliente
-        clienteActual = {
-            clienteId: pago.clienteId,
-            nombreCompleto: pago.nombreCliente,
-            telefono: pago.telefonoCliente,
-            estadoMembresia: 'Activa' // Asumir activa si está editando
-        };
-        
-        seleccionarCliente(clienteActual);
-        
-        // Llenar formulario con datos existentes
-        montoPagar.value = pago.montoPagado || '';
-        fechaPago.value = pago.fechaPago ? pago.fechaPago.split('T')[0] : '';
-        fechaInicio.value = pago.fechaInicio ? pago.fechaInicio.split('T')[0] : '';
-        
-        if (pago.notas) {
-            document.getElementById('notas').value = pago.notas;
-        }
-        
-        mostrarSeccion('formulario');
-    };
-    
-    // === FUNCIONES DE UTILIDAD ===
-    function formatearFecha(fecha) {
-        if (!fecha) return 'N/A';
-        try {
-            return new Date(fecha).toLocaleDateString('es-ES');
-        } catch {
-            return 'Fecha inválida';
-        }
-    }
-    
-    function formatearPeriodo(inicio, fin) {
-        if (!inicio || !fin) return 'N/A';
-        try {
-            const fechaInicio = new Date(inicio).toLocaleDateString('es-ES');
-            const fechaFin = new Date(fin).toLocaleDateString('es-ES');
-            return `${fechaInicio} - ${fechaFin}`;
-        } catch {
-            return 'Período inválido';
-        }
-    }
-    
-    function mostrarCargando(mostrar) {
-        if (loadingPagos) {
-            loadingPagos.style.display = mostrar ? 'block' : 'none';
-        }
-    }
-    
-    function mostrarEstadoVacio(mostrar) {
-        if (emptyStatePagos) {
-            emptyStatePagos.classList.toggle('hidden', !mostrar);
-        }
-    }
-    
-    function mostrarError(mensaje) {
-        alert(`Error: ${mensaje}`);
-    }
-    
-    function mostrarExito(mensaje) {
-        alert(`Éxito: ${mensaje}`);
-    }
-    
     // === EVENT LISTENERS ===
-    if (btnRegistrarPago) {
-        btnRegistrarPago.addEventListener('click', () => {
-            limpiarFormulario();
-            mostrarSeccion('formulario');
-        });
-    }
-    
-    if (btnFirstPayment) {
-        btnFirstPayment.addEventListener('click', () => {
-            limpiarFormulario();
-            mostrarSeccion('formulario');
-        });
-    }
-    
-    if (btnCancelarPago) {
-        btnCancelarPago.addEventListener('click', () => {
-            limpiarFormulario();
-            mostrarSeccion('lista');
-        });
-    }
-    
-    if (btnVistaTabla) {
-        btnVistaTabla.addEventListener('click', () => {
-            btnVistaTabla.classList.add('active');
-            btnVistaTarjetas.classList.remove('active');
-            toggleVista();
-        });
-    }
-    
-    if (btnVistaTarjetas) {
-        btnVistaTarjetas.addEventListener('click', () => {
-            btnVistaTarjetas.classList.add('active');
-            btnVistaTabla.classList.remove('active');
-            toggleVista();
-        });
-    }
-    
-    // Modal handlers
-    if (modalDetallePago) {
-        modalDetallePago.addEventListener('click', (e) => {
-            if (e.target === modalDetallePago || e.target.classList.contains('btn-close-modal')) {
-                modalDetallePago.classList.add('hidden');
-            }
-        });
-    }
-    
-    if (modalConfirmacion) {
-        modalConfirmacion.addEventListener('click', (e) => {
-            if (e.target === modalConfirmacion) {
-                modalConfirmacion.classList.add('hidden');
-            }
-        });
-    }
-    
-    if (btnCancelarModal) {
-        btnCancelarModal.addEventListener('click', () => {
-            modalConfirmacion.classList.add('hidden');
-        });
-    }
-    
-    // Cerrar dropdowns al hacer clic fuera
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-input-container')) {
-            listaClientes.classList.add('hidden');
+    function inicializarEventListeners() {
+        if (btnRegistrarPago) {
+            btnRegistrarPago.addEventListener('click', function() {
+                console.log("Botón 'Registrar Nuevo Pago' clickeado");
+                editandoPago = null;
+                limpiarFormulario();
+                mostrarSeccion('formulario');
+                formLegend.textContent = 'Registrar Nuevo Pago';
+                // Asegurarse que el botón de submit del formulario diga "Registrar Pago"
+                const submitButton = formularioPago.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> Registrar Pago';
+                }
+                console.log("Mostrando sección formulario y limpiando el mismo.");
+            });
         }
-    });
+
+        if (btnFirstPayment) {
+            btnFirstPayment.addEventListener('click', function() {
+                console.log("Botón 'Registrar Primer Pago' clickeado");
+                editandoPago = null;
+                limpiarFormulario();
+                mostrarSeccion('formulario');
+                formLegend.textContent = 'Registrar Primer Pago';
+                 // Asegurarse que el botón de submit del formulario diga "Registrar Pago"
+                const submitButton = formularioPago.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = '<i class="fas fa-save"></i> Registrar Pago';
+                }
+                console.log("Mostrando sección formulario para el primer pago.");
+            });
+        }
+
+        if (btnCancelarPago) {
+            btnCancelarPago.addEventListener('click', function() {
+                console.log("Botón 'Cancelar Pago' clickeado");
+                mostrarSeccion('lista');
+                limpiarFormulario();
+                console.log("Mostrando sección lista y limpiando formulario.");
+            });
+        }
+
+        if (btnVistaTabla) {
+            btnVistaTabla.addEventListener('click', function() {
+                this.classList.add('active');
+                btnVistaTarjetas.classList.remove('active');
+                toggleVista();
+                console.log("Cambiando a vista de tabla.");
+            });
+        }
+
+        if (btnVistaTarjetas) {
+            btnVistaTarjetas.addEventListener('click', function() {
+                this.classList.add('active');
+                btnVistaTabla.classList.remove('active');
+                toggleVista();
+                console.log("Cambiando a vista de tarjetas.");
+            });
+        }
+        
+        // Cerrar modales
+        document.querySelectorAll('.modal .btn-close-modal, .modal .btn-secondary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.modal').classList.add('hidden');
+            });
+        });
+
+        if (btnCancelarModal) {
+            btnCancelarModal.addEventListener('click', function() {
+                if(modalConfirmacion) modalConfirmacion.classList.add('hidden');
+            });
+        }
+    }
     
     // === INICIALIZACIÓN ===
-    function inicializar() {
-        mostrarSeccion('lista');
-        configurarBusqueda();
-        configurarFormulario();
+    function init() {
+        console.log("Inicializando módulo de pagos...");
+        mostrarSeccion('lista'); // Mostrar lista por defecto
+        toggleVista(); // Configurar vista inicial (tabla o tarjetas)
+        
         cargarPagos();
         cargarTiposPago();
         cargarMembresiasDisponibles();
         
-        // Establecer fecha actual por defecto
-        const hoy = new Date().toISOString().split('T')[0];
-        if (fechaPago) fechaPago.value = hoy;
-        if (fechaInicio) fechaInicio.value = hoy;
+        configurarFormulario();
+        configurarBusqueda();
+        inicializarEventListeners(); // Asegurarse que los event listeners se inicializan
+        console.log("Módulo de pagos inicializado.");
+    }
+
+    init(); 
+});
+
+// Hacer funciones globales para ser llamadas desde HTML (si es necesario para botones en tabla/tarjetas)
+window.verDetallePago = async function(pagoId) {
+    console.log(`Ver detalle del pago ID: ${pagoId}`);
+    try {
+        const pago = pagosData.find(p => p.clienteMembresiaId === pagoId); // Corrected clienteMembresiaId to pagoId
+        if (!pago) {
+            mostrarError('No se encontraron los detalles del pago');
+            return;
+        }
+        
+        const detallePagoContent = document.getElementById('detalle-pago-content');
+        detallePagoContent.innerHTML = `
+            <div class="payment-details">
+                <div class="detail-group">
+                    <h4><i class="fas fa-user"></i> Información del Cliente</h4>
+                    <p><strong>Nombre:</strong> ${pago.nombreCliente}</p>
+                    <p><strong>Correo:</strong> ${pago.correoCliente || 'N/A'}</p>
+                    <p><strong>Teléfono:</strong> ${pago.telefonoCliente || 'N/A'}</p>
+                </div>
+                <div class="detail-group">
+                    <h4><i class="fas fa-id-card"></i> Información de la Membresía</h4>
+                    <p><strong>Tipo:</strong> ${pago.nombreMembresia}</p>
+                    <p><strong>Precio:</strong> $${(pago.precioMembresia || 0).toFixed(2)}</p>
+                    <p><strong>Período:</strong> ${formatearPeriodo(pago.fechaInicio, pago.fechaFin)}</p>
+                </div>
+                <div class="detail-group">
+                    <h4><i class="fas fa-credit-card"></i> Información del Pago</h4>
+                    <p><strong>Monto Pagado:</strong> $${(pago.montoPagado || 0).toFixed(2)}</p>
+                    <p><strong>Estado:</strong> <span class="payment-status status-${(pago.estadoPago || '').toLowerCase().replace(' ', '')}">${pago.estadoPago}</span></p>
+                    <p><strong>Método:</strong> ${pago.tipoPago || 'N/A'}</p>
+                    <p><strong>Fecha:</strong> ${formatearFecha(pago.fechaPago)}</p>
+                    ${pago.notas ? `<p><strong>Notas:</strong> ${pago.notas}</p>` : ''}
+                </div>
+            </div>
+        `;
+        
+        modalDetallePago.classList.remove('hidden');
+        
+    } catch (error) {
+        console.error('Error al mostrar detalles:', error);
+        mostrarError('Error al cargar los detalles del pago');
+    }
+};
+window.editarPago = async function(pagoId) {
+    console.log(`Editando pago ID: ${pagoId}`);
+    const pago = pagosData.find(p => p.clienteMembresiaId === pagoId);
+    if (!pago) {
+        mostrarError('Pago no encontrado');
+        return;
+    }
+
+    editandoPago = pagoId; // Guardar el ID del pago que se está editando
+    
+    // Simular la selección del cliente
+    // Esto es un workaround si no tenemos todos los datos del cliente en el objeto 'pago'
+    // Idealmente, el objeto 'pago' debería tener clienteId y nombreCompleto
+    if (pago.clienteId && pago.nombreCliente) {
+        seleccionarCliente({ 
+            clienteId: pago.clienteId, 
+            nombreCompleto: pago.nombreCliente,
+            // Podrías necesitar más detalles del cliente aquí si el backend los provee con el pago
+            telefono: pago.telefonoCliente || '', 
+            estadoMembresia: pago.estadoMembresiaCliente || 'Desconocido'
+        });
+    } else {
+        // Si no tenemos datos del cliente, al menos limpiar la selección actual
+        // y permitir buscarlo si es necesario (aunque para editar no debería ser necesario cambiarlo)
+        clienteActual = null;
+        buscarCliente.style.display = 'block';
+        clienteSeleccionado.classList.add('hidden');
+        // Podrías querer deshabilitar la búsqueda de cliente aquí, ya que estamos editando un pago existente.
+    }
+
+    // Llenar el formulario
+    if(membresiaSelect) membresiaSelect.value = pago.membresiaId;
+    if(montoPagar) montoPagar.value = pago.montoPagado;
+    if(tipoPago) tipoPago.value = pago.tipoPagoId; // Asumiendo que tipoPagoId es el valor correcto
+    if(fechaPago) fechaPago.value = pago.fechaPago ? pago.fechaPago.split('T')[0] : '';
+    if(fechaInicio) fechaInicio.value = pago.fechaInicio ? pago.fechaInicio.split('T')[0] : '';
+    const notasTextarea = formularioPago.querySelector('#notas');
+    if(notasTextarea) notasTextarea.value = pago.notas || '';
+
+    // Actualizar UI del formulario
+    formLegend.textContent = 'Editar Pago';
+    const submitButton = formularioPago.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
     }
     
-    // Inicializar la aplicación
-    inicializar();
-});
+    // Actualizar precio de membresía si es posible
+    const selectedMembresiaOption = membresiaSelect.options[membresiaSelect.selectedIndex];
+    if (selectedMembresiaOption && selectedMembresiaOption.dataset.precio) {
+        precioMembresia.textContent = parseFloat(selectedMembresiaOption.dataset.precio).toFixed(2);
+    } else {
+        // Si no se puede obtener el precio de la membresía (ej. la membresía ya no existe)
+        // se podría mostrar el monto pagado o un mensaje.
+        // Por ahora, si no hay precio en dataset, se deja como está o se pone el monto pagado.
+        precioMembresia.textContent = parseFloat(pago.montoPagado).toFixed(2);
+    }
+    
+    mostrarSeccion('formulario');
+    console.log("Formulario llenado para editar pago.");
+};
