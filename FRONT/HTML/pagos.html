@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pagos - Gym Management</title>
+    <link rel="stylesheet" href="../css/pagos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">
+                <i class="fas fa-credit-card"></i>
+                Gestión de Pagos
+            </h1>
+            <nav class="header-nav">
+                <a href="hub.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> 
+                    Regresar al Hub
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Sección de Estadísticas -->
+        <section id="estadisticas-pagos" class="seccion-estadisticas">
+            <div id="stats-container">
+                <!-- Las estadísticas se cargarán aquí dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Sección de Controles -->
+        <section class="controls-section">
+            <div class="controls-grid">
+                <button class="btn-action btn-primary" id="btnRegistrarPago">
+                    <i class="fas fa-plus-circle"></i>
+                    Registrar Nuevo Pago
+                </button>
+                
+                <div class="search-controls">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="buscarPagos" placeholder="Buscar por cliente, membresía...">
+                    </div>
+                </div>
+
+                <div class="view-controls">
+                    <button id="btnVistaTabla" class="btn-view active">
+                        <i class="fas fa-table"></i> Tabla
+                    </button>
+                    <button id="btnVistaTarjetas" class="btn-view">
+                        <i class="fas fa-th-large"></i> Tarjetas
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Lista de Pagos -->
+        <section id="seccionListaPagos" class="content-section">
+            <h2>Historial de Pagos</h2>
+            
+            <!-- Vista de Tabla -->
+            <div id="vista-tabla" class="table-container">
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Membresía</th>
+                                <th>Monto Pagado</th>
+                                <th>Estado Pago</th>
+                                <th>Método Pago</th>
+                                <th>Fecha Pago</th>
+                                <th>Período</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPagos">
+                            <!-- Los pagos se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Vista de Tarjetas -->
+            <div id="vista-tarjetas" class="cards-container" style="display: none;">
+                <div id="contenedor-tarjetas" class="cards-grid">
+                    <!-- Las tarjetas de pagos se cargarán aquí -->
+                </div>
+            </div>
+
+            <!-- Estado de carga -->
+            <div id="loading-pagos" class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando pagos...</p>
+            </div>
+
+            <!-- Estado vacío -->
+            <div id="empty-state-pagos" class="empty-state hidden">
+                <i class="fas fa-receipt"></i>
+                <h3>No hay pagos registrados</h3>
+                <p>Comienza registrando el primer pago</p>
+                <button id="btnFirstPayment" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Registrar Primer Pago
+                </button>
+            </div>
+        </section>
+
+        <!-- Formulario de Registro/Edición de Pagos -->
+        <section id="seccionFormularioPago" class="form-section hidden">
+            <div class="form-container">
+                <form id="formulario-pago" class="payment-form">
+                    <fieldset>
+                        <legend id="form-legend">Registrar Nuevo Pago</legend>
+                        
+                        <div class="form-grid">
+                            <!-- Selección de Cliente -->
+                            <div class="form-group full-width">
+                                <label for="buscarCliente">
+                                    <i class="fas fa-user"></i>
+                                    Buscar Cliente
+                                </label>
+                                <div class="search-input-container">
+                                    <input type="text" id="buscarCliente" placeholder="Escriba el nombre del cliente..." autocomplete="off">
+                                    <div id="lista-clientes" class="search-dropdown hidden">
+                                        <!-- Lista de clientes se mostrará aquí -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cliente Seleccionado -->
+                            <div id="cliente-seleccionado" class="selected-client hidden">
+                                <div class="client-info">
+                                    <h4 id="clienteNombre">Nombre del Cliente</h4>
+                                    <p id="clienteDetalles">Detalles del cliente</p>
+                                    <span id="clienteMembresia" class="membership-badge">Estado de Membresía</span>
+                                </div>
+                                <button type="button" id="btnCambiarCliente" class="btn-link">
+                                    <i class="fas fa-edit"></i>
+                                    Cambiar cliente
+                                </button>
+                            </div>
+
+                            <!-- Selección de Membresía -->
+                            <div class="form-group">
+                                <label for="membresiaSelect">
+                                    <i class="fas fa-id-card"></i>
+                                    Membresía
+                                </label>
+                                <select id="membresiaSelect" name="membresiaId" required>
+                                    <option value="">-- Seleccionar Membresía --</option>
+                                </select>
+                            </div>
+
+                            <!-- Monto a Pagar -->
+                            <div class="form-group">
+                                <label for="montoPagar">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Monto a Pagar
+                                </label>
+                                <input type="number" id="montoPagar" name="montoPagar" step="0.01" min="0" required>
+                                <small class="help-text">Precio de membresía: $<span id="precio-membresia">0.00</span></small>
+                            </div>
+
+                            <!-- Método de Pago -->
+                            <div class="form-group">
+                                <label for="tipoPago">
+                                    <i class="fas fa-payment"></i>
+                                    Método de Pago
+                                </label>
+                                <select id="tipoPago" name="tipoPago" required>
+                                    <option value="">-- Seleccionar Método --</option>
+                                </select>
+                            </div>
+
+                            <!-- Fecha de Pago -->
+                            <div class="form-group">
+                                <label for="fechaPago">
+                                    <i class="fas fa-calendar"></i>
+                                    Fecha de Pago
+                                </label>
+                                <input type="date" id="fechaPago" name="fechaPago" required>
+                            </div>
+
+                            <!-- Fecha de Inicio -->
+                            <div class="form-group">
+                                <label for="fechaInicio">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    Fecha de Inicio
+                                </label>
+                                <input type="date" id="fechaInicio" name="fechaInicio" required>
+                            </div>
+
+                            <!-- Notas -->
+                            <div class="form-group full-width">
+                                <label for="notas">
+                                    <i class="fas fa-sticky-note"></i>
+                                    Notas (Opcional)
+                                </label>
+                                <textarea id="notas" name="notas" rows="3" placeholder="Observaciones adicionales sobre el pago..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-save"></i>
+                                Registrar Pago
+                            </button>
+                            <button type="button" id="btnCancelarPago" class="btn-cancel">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Confirmación -->
+    <div id="modal-confirmacion" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirmar Acción
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p id="mensaje-confirmacion">¿Está seguro de realizar esta acción?</p>
+            </div>
+            <div class="modal-actions">
+                <button id="btnConfirmar" class="btn-danger">
+                    <i class="fas fa-check"></i>
+                    Confirmar
+                </button>
+                <button id="btnCancelarModal" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalles de Pago -->
+    <div id="modal-detalle-pago" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-receipt"></i>
+                    Detalles del Pago
+                </h3>
+                <button class="btn-close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="detalle-pago-content">
+                    <!-- Los detalles del pago se cargarán aquí -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="btnEditarPago" class="btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Editar Pago
+                </button>
+                <button class="btn-secondary btn-close-modal">
+                    <i class="fas fa-times"></i>
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/pagos.js"></script>
+</body>
+</html>

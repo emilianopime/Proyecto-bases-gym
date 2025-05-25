@@ -17,7 +17,9 @@ app.use(express.json());
 rutas para las paginas
 ========================================================================== */
 // Servir archivos estáticos (HTML, CSS, JS, imágenes)
-app.use(express.static(path.join(__dirname, '../FRONT')));
+const frontPath = path.resolve(__dirname, '../FRONT');
+console.log('Sirviendo archivos estáticos desde:', frontPath);
+app.use(express.static(frontPath));
 
 // Redirigir la raíz al login
 app.get('/', (req, res) => {
@@ -47,6 +49,10 @@ app.use('/api', clasesRoutes); // Todas las rutas de clases estarán bajo /api
 // rutas para asistencias
 const asistenciaRoutes = require('./routes/asistenciaRoutes');
 app.use('/api/asistencias', asistenciaRoutes); // Todas las rutas de asistencias estarán bajo /api/asistencias
+
+// rutas para pagos
+const pagosRoutes = require('./routes/pagosRoutes');
+app.use('/api/pagos', pagosRoutes); // Todas las rutas de pagos estarán bajo /api/pagos
 
 // Iniciar servidor
 app.listen(port, () => {
