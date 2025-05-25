@@ -36,6 +36,9 @@ app.use('/api', clienteRoutes); // Todas las rutas de clientes estarán bajo /ap
 const membresiaRoutes = require('./routes/membresiaRoutes');
 app.use('/api', membresiaRoutes); // Todas las rutas de membresías estarán bajo /api
 
+// rutas para entrenadores
+const entrenadorRoutes = require('./routes/entrenadorRoutes');
+app.use('/api', entrenadorRoutes); // Todas las rutas de entrenadores estarán bajo /api
 
 // Iniciar servidor
 app.listen(port, () => {

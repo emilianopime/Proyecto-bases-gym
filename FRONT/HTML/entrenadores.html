@@ -1,69 +1,92 @@
-<!--h1 se usa para titulares solo llega hasta h6 y solo debe aver un h1-->
-<!--<br/> Se usa para espacios-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!--UTF-8; Indica que que se usaran tildes y caracteres especiales-->
     <meta charset="UTF-8">
-    <!--Le indica al navegador comó debe mostrar la pagina en pantallas más pequeñas como celulares, etc-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Entrenador</title>
+    <title>Gestión de Entrenadores</title>
     <link rel="stylesheet" href="../css/entrenadores.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
-    </head>
+</head>
 
-    <body>
-        <header class="encabezado">
-        <h1 class="encabezado-Titulo">Registro Entrenador</h1>
+<body>
+    <header class="encabezado">
+        <h1 class="encabezado-Titulo">Gestión de Entrenadores</h1>
         <nav class="encabezado-Nav">
             <a href="hub.html" class="btn-regresar">
                 <i class="fas fa-arrow-left"></i> Regresar a inicio
             </a>
         </nav>
     </header>
+
     <main class="contenedor">
-        <div class="contenedor-RegistrarEntrenador">
+        <!-- Sección de Lista de Entrenadores -->
+        <section id="seccionListaEntrenadores" class="seccion-lista">
+            <div class="contenedor-controles">
+                <button id="btnMostrarFormularioRegistro" class="btn-primary">
+                    <i class="fas fa-user-plus"></i> Registrar Nuevo Entrenador
+                </button>
+                <div class="contenedor-busqueda">
+                    <div class="campo-busqueda">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="buscarEntrenador" placeholder="Buscar entrenador por nombre, apellido o especialidad...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Entrenadores -->
+            <div class="contenedor-tabla">
+                <table class="tabla-entrenadores">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Completo</th>
+                            <th>Especialidad</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Fecha Contratación</th>
+                            <th>Clases Asignadas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTablaEntrenadores">
+                        <!-- Datos cargados dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cards de Entrenadores -->
+            <div id="contenedorCardsEntrenadores" class="contenedor-cards">
+                <!-- Cards cargadas dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Sección de Registro/Edición de Entrenador -->
+        <section id="seccionRegistrarEntrenador" class="contenedor-RegistrarEntrenador" style="display: none;">
             <form class="formulario" id="formulario-entrenador">
                 <fieldset>
                     <legend>Datos del Entrenador</legend>
                     <div class="contenedor-RegistrarEntrenador-Campos">
                         <div class="campo">
-                            <label for="nombre">Primer Nombre</label>
+                            <label for="nombre">Nombre</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="Primer nombre" name="Primer nombre" placeholder="Ingrese su primer nombre" required>
+                                <input class="input-text" type="text" id="nombre" name="nombre" placeholder="Ingrese el nombre completo" required>
                             </div>
                         </div>
 
                         <div class="campo">
-                            <label for="segundo nombre">Segundo Nombre</label>
+                            <label for="apellido">Apellido</label>
                             <div class="campo-input">
                                 <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="Segundo Nombre" name="Segundo Nombre" placeholder="Ingrese su segundo nombre" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="apellido paterno">Apellido Paterno</label>
-                            <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="Apellido Paterno" name="Apellido Paterno" placeholder="Ingrese su Apellido Paterno" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="apellido materno">Apellido Materno</label>
-                            <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="Apellido Materno" name="Apellido Materno" placeholder="Ingrese su Apellido Materno" required>
+                                <input class="input-text" type="text" id="apellido" name="apellido" placeholder="Ingrese el apellido completo" required>
                             </div>
                         </div>
 
                         <div class="campo">
                             <label for="especialidad">Especialidad</label>
                             <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="text" id="Especialidad" name="Especialidad" placeholder="Ingrese su Especialidad" required>
+                                <i class="fas fa-dumbbell"></i>
+                                <input class="input-text" type="text" id="especialidad" name="especialidad" placeholder="Ej: Fitness, Yoga, Crossfit" required>
                             </div>
                         </div>
 
@@ -71,7 +94,7 @@
                             <label for="telefono">Teléfono</label>
                             <div class="campo-input">
                                 <i class="fas fa-phone"></i>
-                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingrese su número telefónico" required>
+                                <input class="input-text" type="tel" id="telefono" name="telefono" placeholder="Ingrese el número telefónico" required>
                             </div>
                         </div>
 
@@ -79,19 +102,104 @@
                             <label for="correo">Correo Electrónico</label>
                             <div class="campo-input">
                                 <i class="fas fa-envelope"></i>
-                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingrese su correo electrónico" required>
+                                <input class="input-text" type="email" id="correo" name="correo" placeholder="Ingrese el correo electrónico" required>
                             </div>
                         </div>
 
-                        <div class="campo">
+                        <div class="campo-botones">
                             <button type="submit" class="btn-submit">
-                                <i class="fas fa-user-plus"></i> Registrar Entrenador
+                                <i class="fas fa-user-plus"></i> <span id="textoBotonSubmit">Registrar Entrenador</span>
+                            </button>
+                            <button type="button" id="btnCancelarRegistro" class="btn-cancelar">
+                                <i class="fas fa-times"></i> Cancelar
                             </button>
                         </div>
                     </div>
                 </fieldset>
             </form>
-        </div>
+        </section>
+
+        <!-- Sección de Perfil del Entrenador -->
+        <section id="seccionPerfilEntrenador" class="contenedor-perfil" style="display: none;">
+            <div class="perfil-header">
+                <button id="btnCerrarPerfil" class="btn-cerrar-perfil">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="perfil-info-principal">
+                    <div class="perfil-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="perfil-datos-principales">
+                        <h2 id="perfilEntrenadorNombreCompleto"></h2>
+                        <p class="perfil-id">ID: <span id="perfilEntrenadorID"></span></p>
+                        <p class="perfil-especialidad"><i class="fas fa-dumbbell"></i> <span id="perfilEspecialidad"></span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="perfil-contenido">
+                <div class="pestañas-perfil">
+                    <button class="pestaña activa" data-pestaña="informacion">
+                        <i class="fas fa-info-circle"></i> Información Personal
+                    </button>
+                    <button class="pestaña" data-pestaña="clases">
+                        <i class="fas fa-calendar-alt"></i> Clases Asignadas
+                    </button>
+                    <button class="pestaña" data-pestaña="clientes">
+                        <i class="fas fa-users"></i> Clientes Asignados
+                    </button>
+                </div>
+
+                <div class="contenido-pestaña activa" id="pestaña-informacion">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Nombre:</label>
+                            <span id="perfilNombre"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Apellido:</label>
+                            <span id="perfilApellido"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Teléfono:</label>
+                            <span id="perfilTelefono"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Correo:</label>
+                            <span id="perfilCorreo"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Fecha de Contratación:</label>
+                            <span id="perfilFechaContratacion"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>Estado:</label>
+                            <span id="perfilEstado"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="acciones-perfil">
+                        <button id="btnEditarEntrenador" class="btn-editar">
+                            <i class="fas fa-edit"></i> Editar Información
+                        </button>
+                    </div>
+                </div>
+
+                <div class="contenido-pestaña" id="pestaña-clases">
+                    <div id="listaClasesEntrenador">
+                        <!-- Clases cargadas dinámicamente -->
+                    </div>
+                </div>
+
+                <div class="contenido-pestaña" id="pestaña-clientes">
+                    <div id="listaClientesEntrenador">
+                        <!-- Clientes cargados dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
+
+    <script src="../js/entrenadores.js"></script>
 </body>
 </html>
