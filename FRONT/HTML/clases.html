@@ -3,89 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro De Clases</title>
+    <title>Gestión de Clases - Gym Management</title>
     <link rel="stylesheet" href="../css/clases.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
-    </head>
-
-    <body>
-        <header class="encabezado">
-        <h1 class="encabezado-Titulo">Registro De Clases</h1>
-        <nav class="encabezado-Nav">
-            <a href="hub.html" class="btn-regresar">
-                <i class="fas fa-arrow-left"></i> Regresar a inicio
-            </a>
-        </nav>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">
+                <i class="fas fa-dumbbell"></i>
+                Gestión de Clases
+            </h1>
+            <nav class="header-nav">
+                <a href="hub.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> 
+                    Regresar al Hub
+                </a>
+            </nav>
+        </div>
     </header>
-    <main class="contenedor">
-        <div class="contenedor-RegistrarClases">
-            <form class="formulario" id="formulario-clases">
-                <fieldset>
-                    <legend>Registro De Clases</legend>
-                    <div class="contenedor-RegistrarClases-Campos">
-                        <div class="campo">
-                            <label for="Nombre de la Clase">Nombre de la Clase</label>
-                            <div class="campo-input">
-                                <i class="fas fa-clipboard-list"></i>
-                                <input class="input-text" type="text" id="Nombre de la Clase" name="Nombre de la Clase" placeholder="Ingrese el nombre de la Clase" required>
-                            </div>
+
+    <main class="main-container">
+        <!-- Sección de controles -->
+        <section class="controls-section">
+            <div class="search-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar clases por nombre, entrenador o día...">
+                </div>
+                <div class="filter-controls">
+                    <select id="dayFilter" class="filter-select">
+                        <option value="">Todos los días</option>
+                        <option value="Lunes">Lunes</option>
+                        <option value="Martes">Martes</option>
+                        <option value="Miércoles">Miércoles</option>
+                        <option value="Jueves">Jueves</option>
+                        <option value="Viernes">Viernes</option>
+                        <option value="Sábado">Sábado</option>
+                        <option value="Domingo">Domingo</option>
+                    </select>
+                    <select id="levelFilter" class="filter-select">
+                        <option value="">Todos los niveles</option>
+                        <option value="Principiante">Principiante</option>
+                        <option value="Intermedio">Intermedio</option>
+                        <option value="Avanzado">Avanzado</option>
+                        <option value="Todos los niveles">Todos los niveles</option>
+                    </select>
+                </div>
+                <button id="btnToggleForm" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Nueva Clase
+                </button>
+            </div>
+        </section>
+
+        <!-- Formulario de registro (oculto por defecto) -->
+        <section id="formSection" class="form-section hidden">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 id="formTitle">
+                        <i class="fas fa-plus-circle"></i>
+                        Registrar Nueva Clase
+                    </h2>
+                    <button id="btnCloseForm" class="btn-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="formClase" class="form">
+                    <input type="hidden" id="claseId" name="claseId">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nombre">
+                                <i class="fas fa-tag"></i>
+                                Nombre de la Clase
+                            </label>
+                            <input type="text" id="nombre" name="nombre" required 
+                                   placeholder="Ej: Yoga Matutino, CrossFit Intensivo">
                         </div>
 
-                        <div class="campo">
-                            <label for="ID del Entrenador">ID del Entrenador</label>
-                            <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="number" id="ID del Etrennador" name="ID del Etrennador" placeholder="Ingrese el ID del Etrennador" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="entrenadorId">
+                                <i class="fas fa-user-tie"></i>
+                                Entrenador
+                            </label>
+                            <select id="entrenadorId" name="entrenadorId">
+                                <option value="">Seleccionar entrenador...</option>
+                            </select>
                         </div>
 
-                        <div class="campo">
-                            <label for="Hora de Inicio">Hora de Inicio</label>
-                            <div class="campo-input">
+                        <div class="form-group">
+                            <label for="diaSemana">
+                                <i class="fas fa-calendar-day"></i>
+                                Día de la Semana
+                            </label>
+                            <select id="diaSemana" name="diaSemana" required>
+                                <option value="">Seleccionar día...</option>
+                                <option value="Lunes">Lunes</option>
+                                <option value="Martes">Martes</option>
+                                <option value="Miércoles">Miércoles</option>
+                                <option value="Jueves">Jueves</option>
+                                <option value="Viernes">Viernes</option>
+                                <option value="Sábado">Sábado</option>
+                                <option value="Domingo">Domingo</option>
+                                <option value="Variable">Variable</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="horaInicio">
                                 <i class="fas fa-clock"></i>
-                                <input class="input-text" type="time" id="Hora de Inicio" name="Hora de Inicio" placeholder="Ingrese la hora de Inicio" required>
-                            </div>
+                                Hora de Inicio
+                            </label>
+                            <input type="time" id="horaInicio" name="horaInicio" required>
                         </div>
 
-                        <div class="campo">
-                            <label for="Tiempo de Duración">Tiempo de Duración</labeñ>
-                            <div class="campo-input">
-                                <i class="fas fa-clock"></i>
-                                <input class="input-text" type="time" name="Tiempo de Duración" id="Tiempo de Duración" placeholder="Tiempo de duración en minutos">
-                            </div>
+                        <div class="form-group">
+                            <label for="duracionMinutos">
+                                <i class="fas fa-stopwatch"></i>
+                                Duración (minutos)
+                            </label>
+                            <input type="number" id="duracionMinutos" name="duracionMinutos" 
+                                   required min="15" max="180" placeholder="60">
                         </div>
 
-                        <div class="campo">
-                            <label for="Capacidad Máxima">Capacidad Máxima</label>
-                            <div class="campo-input">
+                        <div class="form-group">
+                            <label for="capacidadMaxima">
                                 <i class="fas fa-users"></i>
-                                <input class="input-text" type="number" id="Capacidad Máxima" name="Capacidad Máxima" placeholder="Ingrese la capacidad máxima de personas" required>
-                            </div>
+                                Capacidad Máxima
+                            </label>
+                            <input type="number" id="capacidadMaxima" name="capacidadMaxima" 
+                                   required min="1" max="50" placeholder="20">
                         </div>
 
-                        <div class="campo">
-                            <label>Días de la Semana</label>
-                            <div class="campo-input dias-semana">
-                                <label><input type="checkbox" name="dias[]" value="Lunes"> Lunes</label>
-                                <label><input type="checkbox" name="dias[]" value="Martes"> Martes</label>
-                                <label><input type="checkbox" name="dias[]" value="Miércoles"> Miércoles</label>
-                                <label><input type="checkbox" name="dias[]" value="Jueves"> Jueves</label>
-                                <label><input type="checkbox" name="dias[]" value="Viernes"> Viernes</label>
-                                <label><input type="checkbox" name="dias[]" value="Sábado"> Sábado</label>
-                                <label><input type="checkbox" name="dias[]" value="Domingo"> Domingo</label>
-                            </div>
+                        <div class="form-group">
+                            <label for="nivelDificultad">
+                                <i class="fas fa-signal"></i>
+                                Nivel de Dificultad
+                            </label>
+                            <select id="nivelDificultad" name="nivelDificultad" required>
+                                <option value="">Seleccionar nivel...</option>
+                                <option value="Principiante">Principiante</option>
+                                <option value="Intermedio">Intermedio</option>
+                                <option value="Avanzado">Avanzado</option>
+                                <option value="Todos los niveles">Todos los niveles</option>
+                            </select>
                         </div>
 
-                        <div class="campo">
-                            <button type="submit" class="btn-submit">
-                                <i class="fas fa-user-plus"></i> Registrar Clases
-                            </button>
-                        </div>
+                        <div class="form-group checkbox-group">
+                            <label for="activa" class="checkbox-label">
+                                <input type="checkbox" id="activa" name="activa" checked>
+                                <span class="checkmark"></span>
+                                <i class="fas fa-check-circle"></i>
+                                Clase Activa
+                            </label>
                         </div>
                     </div>
-                </fieldset>
-            </form>
-        </div>
+
+                    <div class="form-group full-width">
+                        <label for="descripcion">
+                            <i class="fas fa-align-left"></i>
+                            Descripción
+                        </label>
+                        <textarea id="descripcion" name="descripcion" rows="3" 
+                                  placeholder="Descripción detallada de la clase, objetivos, beneficios..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="btnCancelForm" class="btn-secondary">
+                            <i class="fas fa-times"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btnSubmitForm" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Clase
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sección de clases -->
+        <section class="classes-section">
+            <div id="loadingSpinner" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando clases...</p>
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+                <i class="fas fa-calendar-times"></i>
+                <h3>No hay clases registradas</h3>
+                <p>Comienza agregando tu primera clase al gimnasio</p>
+                <button id="btnAddFirstClass" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Agregar Primera Clase
+                </button>
+            </div>
+
+            <div id="clasesGrid" class="classes-grid">
+                <!-- Las tarjetas de clases se generarán dinámicamente aquí -->
+            </div>
+        </section>
     </main>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div id="deleteModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirmar Eliminación
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar esta clase?</p>
+                <p class="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-actions">
+                <button id="btnCancelDelete" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button id="btnConfirmDelete" class="btn-danger">
+                    <i class="fas fa-trash"></i>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/clases.js"></script>
 </body>
 </html>

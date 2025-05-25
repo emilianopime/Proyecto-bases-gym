@@ -3,67 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Asistencia</title>
+    <title>Gestión de Asistencia - Gym Management</title>
     <link rel="stylesheet" href="../css/asistencia.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
-    </head>
-
-    <body>
-        <header class="encabezado">
-        <h1 class="encabezado-Titulo">Registro Asistencia</h1>
-        <nav class="encabezado-Nav">
-            <a href="hub.html" class="btn-regresar">
-                <i class="fas fa-arrow-left"></i> Regresar a inicio
-            </a>
-        </nav>
-    </header>
-    <main class="contenedor">
-        <div class="contenedor-RegistrarAsistencia">
-            <form class="formulario" id="formulario-asistencia">
-                <fieldset>
-                    <legend>Datos de Asistencia</legend>
-                    <div class="contenedor-RegistrarAsistencia-Campos">
-                        <div class="campo">
-                            <label for="nombre">ID Cliente</label>
-                            <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="number" id="ID Cliente" name="ID Cliente" placeholder="Ingrese el ID del Cliente" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="ID Clase">ID Clase</label>
-                            <div class="campo-input">
-                                <i class="fas fa-user"></i>
-                                <input class="input-text" type="number" id="ID Clase" name="ID Clase" placeholder="Ingrese el ID de la Clase" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="Fecha de Asistencia">Fecha de Asistencia</label>
-                            <div class="campo-input">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input class="input-text" type="date" id="Fecha de Asistencia" name="Fecha de Asistencia" placeholder="Ingrese la Fecha de Asistencia" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="Asistio">Asistio</label>
-                            <div class="campo-input">
-                                <i class="fas fa-user-check"></i>
-                                <input class="input-text" type="checkbox" id="Asistio" name="Asistio" placeholder="Asistencia del día" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <button type="submit" class="btn-submit">
-                                <i class="fas fa-user-plus"></i> Registrar Asistencia
-                            </button>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">
+                <i class="fas fa-user-check"></i>
+                Gestión de Asistencia
+            </h1>
+            <nav class="header-nav">
+                <a href="hub.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> 
+                    Regresar al Hub
+                </a>
+            </nav>
         </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Sección de estadísticas -->
+        <section class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalAsistencias">0</h3>
+                        <p>Asistencias Hoy</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="porcentajeAsistencia">0%</h3>
+                        <p>Tasa de Asistencia</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="clasesActivas">0</h3>
+                        <p>Clases Hoy</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de controles -->
+        <section class="controls-section">
+            <div class="date-selector">
+                <label for="fechaSelector">
+                    <i class="fas fa-calendar-alt"></i>
+                    Fecha
+                </label>
+                <input type="date" id="fechaSelector" name="fechaSelector">
+            </div>
+            <div class="actions">
+                <button id="btnActualizarClases" class="btn-secondary">
+                    <i class="fas fa-sync-alt"></i>
+                    Actualizar
+                </button>
+                <button id="btnVerHistorial" class="btn-outline">
+                    <i class="fas fa-history"></i>
+                    Ver Historial
+                </button>
+            </div>
+        </section>
+
+        <!-- Sección de clases del día -->
+        <section class="classes-section">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-day"></i>
+                Clases del Día
+            </h2>
+            
+            <div id="loadingSpinner" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando clases...</p>
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+                <i class="fas fa-calendar-times"></i>
+                <h3>No hay clases programadas</h3>
+                <p>No se encontraron clases para la fecha seleccionada</p>
+            </div>
+
+            <div id="clasesGrid" class="classes-grid">
+                <!-- Las tarjetas de clases se generarán dinámicamente aquí -->
+            </div>
+        </section>
+
+        <!-- Sección de historial (oculta por defecto) -->
+        <section id="historialSection" class="historial-section hidden">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Historial de Asistencias
+            </h2>
+            
+            <div class="historial-filters">
+                <input type="text" id="searchHistorial" placeholder="Buscar por cliente o clase...">
+                <select id="filtroAsistencia">
+                    <option value="">Todas las asistencias</option>
+                    <option value="1">Solo asistencias</option>
+                    <option value="0">Solo ausencias</option>
+                </select>
+            </div>
+
+            <div class="table-container">
+                <table id="tablaHistorial" class="historial-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Clase</th>
+                            <th>Hora Check-in</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filas se generarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </main>
+
+    <!-- Modal para registrar asistencia -->
+    <div id="modalAsistencia" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-user-plus"></i>
+                    Registrar Asistencia
+                </h3>
+                <button id="btnCerrarModal" class="btn-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="clase-info">
+                    <h4 id="claseNombre">Clase</h4>
+                    <p id="claseDetalles">Detalles de la clase</p>
+                </div>
+                
+                <form id="formAsistencia" class="form">
+                    <input type="hidden" id="claseIdModal" name="claseId">
+                    <input type="hidden" id="fechaAsistenciaModal" name="fechaAsistencia">
+                    
+                    <div class="form-group">
+                        <label for="buscarCliente">
+                            <i class="fas fa-search"></i>
+                            Buscar Cliente
+                        </label>
+                        <input type="text" id="buscarCliente" placeholder="Nombre del cliente o ID...">
+                        <div id="clientesSugerencias" class="sugerencias"></div>
+                    </div>
+                    
+                    <div id="clienteSeleccionado" class="cliente-seleccionado hidden">
+                        <div class="cliente-info">
+                            <h5 id="clienteNombre">Cliente</h5>
+                            <p id="clienteDetalles">Detalles del cliente</p>
+                            <span id="clienteMembresia" class="membership-badge">Membresía</span>
+                        </div>
+                        <button type="button" id="btnCambiarCliente" class="btn-link">
+                            <i class="fas fa-edit"></i>
+                            Cambiar cliente
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horaCheckIn">
+                            <i class="fas fa-clock"></i>
+                            Hora de Check-in (opcional)
+                        </label>
+                        <input type="time" id="horaCheckIn" name="horaCheckIn">
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label for="asistioDef" class="checkbox-label">
+                            <input type="checkbox" id="asistioDef" name="asistio" checked>
+                            <span class="checkmark"></span>
+                            <i class="fas fa-check-circle"></i>
+                            Marcar como presente
+                        </label>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="btnCancelarAsistencia" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button id="btnGuardarAsistencia" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    Registrar Asistencia
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación de eliminación -->
+    <div id="deleteModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Confirmar Eliminación
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar este registro de asistencia?</p>
+                <p class="warning-text">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-actions">
+                <button id="btnCancelDelete" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </button>
+                <button id="btnConfirmDelete" class="btn-danger">
+                    <i class="fas fa-trash"></i>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/asistencia.js"></script>
 </body>
 </html>

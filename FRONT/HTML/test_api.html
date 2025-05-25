@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Asistencia API</title>
+</head>
+<body>
+    <h1>Test Attendance API</h1>
+    <button onclick="testAttendanceRegistration()">Test Attendance Registration</button>
+    <button onclick="testGetStatistics()">Test Get Statistics</button>
+    <button onclick="testGetClasses()">Test Get Monday Classes</button>
+    <button onclick="testSearchClients()">Test Search Clients</button>
+    
+    <div id="results"></div>
+
+    <script>
+        async function testAttendanceRegistration() {
+            try {
+                const response = await fetch('/api/asistencias', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        clienteId: 2,
+                        claseId: 4,
+                        fechaAsistencia: '2025-05-26'
+                    })
+                });
+                
+                const result = await response.json();
+                document.getElementById('results').innerHTML = '<h3>Registration Result:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<h3>Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+
+        async function testGetStatistics() {
+            try {
+                const response = await fetch('/api/asistencias/estadisticas');
+                const result = await response.json();
+                document.getElementById('results').innerHTML = '<h3>Statistics:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<h3>Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+
+        async function testGetClasses() {
+            try {
+                const response = await fetch('/api/asistencias/clases-del-dia?fecha=2025-05-26');
+                const result = await response.json();
+                document.getElementById('results').innerHTML = '<h3>Monday Classes:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<h3>Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+
+        async function testSearchClients() {
+            try {
+                const response = await fetch('/api/asistencias/buscar-clientes?termino=mauric');
+                const result = await response.json();
+                document.getElementById('results').innerHTML = '<h3>Client Search:</h3><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = '<h3>Error:</h3><pre>' + error.message + '</pre>';
+            }
+        }
+    </script>
+</body>
+</html>

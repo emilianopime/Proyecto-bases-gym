@@ -40,6 +40,14 @@ app.use('/api', membresiaRoutes); // Todas las rutas de membresías estarán baj
 const entrenadorRoutes = require('./routes/entrenadorRoutes');
 app.use('/api', entrenadorRoutes); // Todas las rutas de entrenadores estarán bajo /api
 
+// rutas para clases
+const clasesRoutes = require('./routes/clasesRoutes');
+app.use('/api', clasesRoutes); // Todas las rutas de clases estarán bajo /api
+
+// rutas para asistencias
+const asistenciaRoutes = require('./routes/asistenciaRoutes');
+app.use('/api/asistencias', asistenciaRoutes); // Todas las rutas de asistencias estarán bajo /api/asistencias
+
 // Iniciar servidor
 app.listen(port, () => {
   console.log(`Servidor ejecutándose en http://localhost:${port}`);
