@@ -20,14 +20,26 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             seccionLista.style.display = 'block';
         }
-    }
-
-    async function cargarMembresias() {
+    }    async function cargarMembresias() {
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const membresias = await response.json();
             renderizarTabla(membresias);
+        } catch (error) {
+            console.error('Error al cargar membresías:', error);
+            if(tablaMembresias) tablaMembresias.innerHTML = '<tr><td colspan="7">Error al cargar membresías.</td></tr>';
+        }
+    }
+
+    // Función para cargar membresías en ambas vistas (tabla y tarjetas)
+    async function cargarMembresiasCompleto() {
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const membresias = await response.json();
+            renderizarTabla(membresias);
+            renderizarTarjetas(membresias);
         } catch (error) {
             console.error('Error al cargar membresías:', error);
             if(tablaMembresias) tablaMembresias.innerHTML = '<tr><td colspan="7">Error al cargar membresías.</td></tr>';
@@ -113,11 +125,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || `Error ${response.status}`);
-                }
-                alert(`Membresía ${editandoId ? 'actualizada' : 'creada'} con éxito.`);
+                }                alert(`Membresía ${editandoId ? 'actualizada' : 'creada'} con éxito.`);
                 formularioMembresia.reset();
                 editandoId = null;
-                cargarMembresias();
+                cargarMembresiasCompleto();
                 mostrarSeccion('lista');
             } catch (error) {
                 console.error('Error al guardar membresía:', error);
@@ -158,17 +169,187 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(`${apiUrl}/${id}`, { method: 'DELETE' });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || `Error ${response.status}`);
-            }
+                throw new Error(errorData.message || `Error ${response.status}`);            }
             alert('Membresía eliminada con éxito.');
-            cargarMembresias();
+            cargarMembresiasCompleto();
         } catch (error) {
             console.error(`Error al eliminar membresía ${id}:`, error);
             alert(`Error al eliminar membresía: ${error.message}`);
         }
     }
 
-    // Carga inicial y configuración de la vista
-    mostrarSeccion('lista'); // Mostrar lista por defecto
-    cargarMembresias();
+    // Función para cargar estadísticas
+    async function cargarEstadisticas() {
+        try {
+            const response = await fetch('/api/membresias/estadisticas/resumen');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const stats = await response.json();
+            renderizarEstadisticas(stats);
+        } catch (error) {
+            console.error('Error al cargar estadísticas:', error);
+        }
+    }
+
+    function renderizarEstadisticas(stats) {
+        const contenedorStats = document.getElementById('estadisticas-membresias');
+        if (!contenedorStats) return;
+
+        contenedorStats.innerHTML = `
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-list-alt"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>${stats.resumen.totalTipos}</h3>
+                        <p>Tipos de Membresía</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>$${stats.resumen.precioPromedio || 0}</h3>
+                        <p>Precio Promedio</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-swimming-pool"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>${stats.accesos.conPiscina}</h3>
+                        <p>Con Acceso a Piscina</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>${stats.accesos.conClases}</h3>
+                        <p>Con Acceso a Clases</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Función para alternar entre vista de tabla y tarjetas
+    function toggleVista() {
+        const btnTarjetas = document.getElementById('btnVistaTarjetas');
+        const btnTabla = document.getElementById('btnVistaTabla');
+        const contenedorTabla = document.querySelector('.tabla-responsive');
+        const contenedorTarjetas = document.getElementById('contenedor-tarjetas');
+
+        if (btnTarjetas && btnTabla && contenedorTabla && contenedorTarjetas) {
+            btnTarjetas.addEventListener('click', () => {
+                contenedorTabla.style.display = 'none';
+                contenedorTarjetas.style.display = 'grid';
+                btnTarjetas.classList.add('activo');
+                btnTabla.classList.remove('activo');
+            });
+
+            btnTabla.addEventListener('click', () => {
+                contenedorTabla.style.display = 'block';
+                contenedorTarjetas.style.display = 'none';
+                btnTabla.classList.add('activo');
+                btnTarjetas.classList.remove('activo');
+            });
+        }
+    }
+
+    // Función para renderizar vista de tarjetas
+    function renderizarTarjetas(membresias) {
+        const contenedorTarjetas = document.getElementById('contenedor-tarjetas');
+        if (!contenedorTarjetas) return;
+
+        contenedorTarjetas.innerHTML = '';
+        if (!membresias || membresias.length === 0) {
+            contenedorTarjetas.innerHTML = '<p class="no-data">No hay tipos de membresía registrados.</p>';
+            return;
+        }
+
+        membresias.forEach(m => {
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'tarjeta-membresia';
+            tarjeta.innerHTML = `
+                <div class="tarjeta-header">
+                    <h3>${m.nombre}</h3>
+                    <div class="tarjeta-precio">$${typeof m.precio === 'number' ? m.precio.toFixed(2) : 'N/A'}</div>
+                </div>
+                <div class="tarjeta-body">
+                    <p class="descripcion">${m.descripcion || 'Sin descripción'}</p>
+                    <div class="caracteristicas">
+                        <div class="caracteristica">
+                            <i class="fas fa-calendar-day"></i>
+                            <span>${m.duracionDias} días</span>
+                        </div>
+                        <div class="caracteristica ${m.accesoPiscina ? 'activa' : 'inactiva'}">
+                            <i class="fas fa-swimming-pool"></i>
+                            <span>Piscina</span>
+                        </div>
+                        <div class="caracteristica ${m.accesoClases ? 'activa' : 'inactiva'}">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Clases</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="tarjeta-footer">
+                    <button class="btn-tarjeta btn-editar" data-id="${m.membresiaID}">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button class="btn-tarjeta btn-eliminar" data-id="${m.membresiaID}">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            `;
+            contenedorTarjetas.appendChild(tarjeta);
+        });
+
+        // Agregar listeners a los botones de las tarjetas
+        contenedorTarjetas.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', () => prepararEdicion(btn.dataset.id));
+        });
+        contenedorTarjetas.querySelectorAll('.btn-eliminar').forEach(btn => {
+            btn.addEventListener('click', () => eliminarMembresia(btn.dataset.id));
+        });
+    }
+
+    // Función de búsqueda en tiempo real
+    function configurarBusqueda() {
+        const inputBusqueda = document.getElementById('busqueda-membresias');
+        if (!inputBusqueda) return;
+
+        let membresiasCargadas = [];
+
+        // Guardar la referencia a todas las membresías
+        const cargarMembresiasBusqueda = async () => {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                membresiasCargadas = await response.json();
+            } catch (error) {
+                console.error('Error al cargar membresías para búsqueda:', error);
+            }
+        };
+
+        inputBusqueda.addEventListener('input', (e) => {
+            const termino = e.target.value.toLowerCase();
+            const membresiasFiltradas = membresiasCargadas.filter(m => 
+                m.nombre.toLowerCase().includes(termino) ||
+                (m.descripcion && m.descripcion.toLowerCase().includes(termino))
+            );
+
+            renderizarTabla(membresiasFiltradas);
+            renderizarTarjetas(membresiasFiltradas);
+        });        cargarMembresiasBusqueda();
+    }
+
+    // Inicializar todo
+    cargarMembresiasCompleto();
+    cargarEstadisticas();
+    toggleVista();
+    configurarBusqueda();
 });

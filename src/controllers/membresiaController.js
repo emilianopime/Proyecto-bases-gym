@@ -231,11 +231,92 @@ async function deleteMembresia(req, res) {
     }
 }
 
+// Obtener estadísticas de membresías
+async function getEstadisticasMembresias(req, res) {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        // Estadísticas básicas
+        const statsResult = await connection.execute(`
+            SELECT 
+                COUNT(*) as total_tipos,
+                ROUND(AVG(Precio), 2) as precio_promedio,
+                MIN(Precio) as precio_minimo,
+                MAX(Precio) as precio_maximo,
+                ROUND(AVG(DuracionDias), 0) as duracion_promedio
+            FROM Membresias
+        `);
+        
+        // Conteo de membresías con acceso a piscina
+        const piscinaResult = await connection.execute(`
+            SELECT 
+                SUM(CASE WHEN AccesoPiscina = 1 THEN 1 ELSE 0 END) as con_piscina,
+                SUM(CASE WHEN AccesoPiscina = 0 THEN 1 ELSE 0 END) as sin_piscina
+            FROM Membresias
+        `);
+        
+        // Conteo de membresías con acceso a clases
+        const clasesResult = await connection.execute(`
+            SELECT 
+                SUM(CASE WHEN AccesoClases = 1 THEN 1 ELSE 0 END) as con_clases,
+                SUM(CASE WHEN AccesoClases = 0 THEN 1 ELSE 0 END) as sin_clases
+            FROM Membresias
+        `);
+
+        // Distribución por rangos de precio
+        const preciosResult = await connection.execute(`
+            SELECT 
+                SUM(CASE WHEN Precio <= 50 THEN 1 ELSE 0 END) as economicas,
+                SUM(CASE WHEN Precio > 50 AND Precio <= 100 THEN 1 ELSE 0 END) as intermedias,
+                SUM(CASE WHEN Precio > 100 THEN 1 ELSE 0 END) as premium
+            FROM Membresias
+        `);
+
+        const stats = statsResult.rows[0];
+        const piscina = piscinaResult.rows[0];
+        const clases = clasesResult.rows[0];
+        const precios = preciosResult.rows[0];
+
+        res.json({
+            resumen: {
+                totalTipos: stats[0],
+                precioPromedio: stats[1],
+                precioMinimo: stats[2],
+                precioMaximo: stats[3],
+                duracionPromedio: stats[4]
+            },
+            accesos: {
+                conPiscina: piscina[0],
+                sinPiscina: piscina[1],
+                conClases: clases[0],
+                sinClases: clases[1]
+            },
+            distribucionPrecios: {
+                economicas: precios[0],
+                intermedias: precios[1],
+                premium: precios[2]
+            }
+        });
+    } catch (err) {
+        console.error('Error al obtener estadísticas de membresías:', err);
+        res.status(500).json({ message: 'Error del servidor al obtener estadísticas: ' + err.message });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error('Error al cerrar conexión:', err);
+            }
+        }
+    }
+}
 
 module.exports = {
     getAllMembresias,
     getMembresiaById,
     createMembresia,
     updateMembresia,
-    deleteMembresia
-}
+    deleteMembresia,
+    getEstadisticasMembresias
+};

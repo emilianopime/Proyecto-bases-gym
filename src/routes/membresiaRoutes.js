@@ -5,6 +5,7 @@ const membresiaController = require('../controllers/membresiaController');
 
 // Rutas para Tipos de Membresías
 router.get('/membresias', membresiaController.getAllMembresias);
+router.get('/membresias/estadisticas/resumen', membresiaController.getEstadisticasMembresias);
 router.post('/membresias', membresiaController.createMembresia);
 router.get('/membresias/:id', membresiaController.getMembresiaById);
 router.put('/membresias/:id', membresiaController.updateMembresia);

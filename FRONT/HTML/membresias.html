@@ -18,12 +18,36 @@
         </nav>
     </header>
     <main class="contenedor">
+        <!-- Sección de estadísticas -->
+        <section id="estadisticas-membresias" class="seccion-estadisticas">
+            <!-- Las estadísticas se cargarán aquí por JavaScript -->
+        </section>
+
         <!-- Sección para mostrar la lista de membresías -->
         <section id="seccionListaMembresias">
-            <h2>Tipos de Membresía Existentes</h2>
+            <div class="header-seccion">
+                <h2>Tipos de Membresía Existentes</h2>
+                <div class="controles-vista">
+                    <div class="busqueda-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="busqueda-membresias" placeholder="Buscar membresías..." class="input-busqueda">
+                    </div>
+                    <div class="botones-vista">
+                        <button id="btnVistaTabla" class="btn-vista activo">
+                            <i class="fas fa-table"></i> Tabla
+                        </button>
+                        <button id="btnVistaTarjetas" class="btn-vista">
+                            <i class="fas fa-th-large"></i> Tarjetas
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <button id="btnMostrarFormularioRegistroMembresia" class="btn-accion btn-primario">
                 <i class="fas fa-plus-circle"></i> Registrar Nuevo Tipo de Membresía
             </button>
+
+            <!-- Vista de tabla (existente) -->
             <div class="tabla-responsive">
                 <table class="tabla-moderna">
                     <thead>
@@ -42,6 +66,11 @@
                         <!-- Las filas de membresías se cargarán aquí por JavaScript -->
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Vista de tarjetas (nueva) -->
+            <div id="contenedor-tarjetas" class="contenedor-tarjetas" style="display: none;">
+                <!-- Las tarjetas se cargarán aquí por JavaScript -->
             </div>
         </section>
 
