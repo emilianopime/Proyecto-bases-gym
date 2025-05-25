@@ -1,7 +1,7 @@
 /* ==========================================================================
    Google Fonts
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
 /* ==========================================================================
    Configuración Global y Reset
@@ -28,6 +28,13 @@ body {
     font-family: 'Montserrat', Arial, sans-serif;
     color: #ffffff;
     line-height: 1.6;
+    font-size: 1.6rem; /* Default font size */
+}
+
+.contenedor {
+    margin: 0 auto;
+    max-width: 160rem; 
+    padding: 2rem;
 }
 
 /* ==========================================================================
@@ -44,7 +51,7 @@ body {
 }
 
 .encabezado-Titulo {
-    font-size: 4rem;
+    font-size: 3.5rem; /* Ajustado para membresías */
     color: #ffd764;
     margin-bottom: 1rem;
     text-transform: uppercase;
@@ -69,18 +76,139 @@ body {
     transform: translateX(-5px);
 }
 
-/* ==========================================================================
-   Contenedor Principal
-   ========================================================================== */
-.contenedor {
-    margin: 0 auto;
-    max-width: 120rem;
-    padding: 2rem;
+/* Botones de Acción Genéricos */
+.btn-accion {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-.contenedor-RegistrarMembresía {
-    max-width: 60rem;
-    margin: 0 auto;
+.btn-primario {
+    background-color: #ffd764;
+    color: #18181b;
+}
+
+.btn-primario:hover {
+    background-color: #e6c35a;
+    box-shadow: 0 4px 12px rgba(255, 215, 100, 0.3);
+}
+
+.btn-secundario {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secundario:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+/* ==========================================================================
+   Estilos para la Tabla de Membresías
+   ========================================================================== */
+#seccionListaMembresias h2 {
+    font-size: 2.8rem;
+    color: #ffd764;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#btnMostrarFormularioRegistroMembresia {
+    margin-bottom: 2rem;
+    display: block; /* Para centrarlo si es necesario o darle ancho completo */
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 350px; /* Ajusta según necesidad */
+    justify-content: center;
+}
+
+.tabla-responsive {
+    width: 100%;
+    overflow-x: auto; /* Permite scroll horizontal en pantallas pequeñas */
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.tabla-moderna {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1.4rem; /* Tamaño de fuente base para la tabla */
+}
+
+.tabla-moderna th,
+.tabla-moderna td {
+    padding: 1.2rem 1.5rem; /* Espaciado dentro de las celdas */
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 215, 100, 0.1); /* Línea divisoria sutil */
+}
+
+.tabla-moderna th {
+    background-color: rgba(255, 215, 100, 0.1); /* Fondo para encabezados */
+    color: #ffd764; /* Color de texto para encabezados */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabla-moderna tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.tabla-moderna tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.08); /* Resaltado al pasar el mouse */
+}
+
+.tabla-moderna tbody tr:last-child td {
+    border-bottom: none; /* Sin borde en la última fila */
+}
+
+.tabla-moderna td {
+    color: #e0e0e0; /* Color de texto para celdas de datos */
+}
+
+/* Estilos para los botones de acción dentro de la tabla */
+.btn-accion-tabla {
+    background: none;
+    border: none;
+    color: #ffd764; /* Color principal para iconos */
+    cursor: pointer;
+    font-size: 1.8rem; /* Tamaño de los iconos */
+    padding: 0.5rem;
+    margin-right: 0.8rem; /* Espacio entre botones */
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-accion-tabla:hover {
+    color: #fff; /* Color al pasar el mouse */
+    transform: scale(1.1);
+}
+
+.btn-accion-tabla.btn-eliminar-membresia:hover {
+    color: #ff6b6b; /* Color específico para el botón de eliminar al pasar el mouse */
+}
+
+/* ==========================================================================
+   Estilos para el Formulario de Membresías
+   ========================================================================== */
+#seccionRegistrarMembresia {
+    margin-top: 3rem;
+}
+.contenedor-Formulario { /* Similar a .contenedor-RegistrarCliente */
+    max-width: 70rem; /* Ancho del formulario */
+    margin: 2rem auto;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 1.5rem;
     padding: 3rem;
@@ -89,9 +217,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ==========================================================================
-   Formulario
-   ========================================================================== */
 .formulario fieldset {
     border: none;
     padding: 0;
@@ -100,14 +225,27 @@ body {
 .formulario legend {
     font-size: 2.4rem;
     color: #ffd764;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     text-align: center;
     font-weight: 600;
 }
 
-.campo {
-    margin-bottom: 2rem;
+.formulario-campos {
+    display: grid;
+    gap: 2rem; /* Espacio entre campos */
 }
+
+/* Si quieres dos columnas en el formulario en pantallas más grandes */
+@media (min-width: 768px) {
+    .formulario-campos {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    /* Para que algunos campos ocupen ambas columnas si es necesario */
+    .formulario-campos .campo-full-width {
+        grid-column: 1 / -1;
+    }
+}
+
 
 .campo label {
     display: block;
@@ -121,7 +259,7 @@ body {
     position: relative;
 }
 
-.campo-input i {
+.campo-input i.fas { /* Iconos dentro de los inputs */
     position: absolute;
     left: 1.5rem;
     top: 50%;
@@ -130,68 +268,84 @@ body {
     font-size: 1.6rem;
 }
 
-.input-text {
+.input-text,
+textarea.input-text {
     width: 100%;
-    padding: 1.2rem 1.2rem 1.2rem 4.5rem;
+    padding: 1.2rem 1.2rem 1.2rem 4.5rem; /* Espacio para el icono */
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.8rem;
     background: rgba(255, 255, 255, 0.05);
     color: #ffffff;
     font-size: 1.6rem;
     transition: all 0.3s ease;
+    font-family: 'Montserrat', sans-serif;
+}
+textarea.input-text {
+    padding: 1.2rem; /* Textarea no suele llevar icono interno */
+    min-height: 100px;
 }
 
-.input-text:focus {
+
+.input-text:focus,
+textarea.input-text:focus {
     outline: none;
     border-color: #ffd764;
     box-shadow: 0 0 0 2px rgba(255, 215, 100, 0.2);
 }
 
-.input-text::placeholder {
+.input-text::placeholder,
+textarea.input-text::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.btn-submit {
-    width: 100%;
-    padding: 1.2rem;
-    background: #ffd764;
-    color: #18181b;
-    border: none;
-    border-radius: 0.8rem;
-    font-size: 1.6rem;
-    font-weight: 600;
-    cursor: pointer;
+/* Checkboxes */
+.campo-checkbox {
     display: flex;
     align-items: center;
-    justify-content: center;
+    margin-top: 1rem; /* Ajuste para alinear mejor si están en grid */
+}
+.campo-input-checkbox {
+    display: flex;
+    align-items: center;
     gap: 1rem;
-    transition: all 0.3s ease;
+}
+.campo-input-checkbox input[type="checkbox"] {
+    width: 1.8rem;
+    height: 1.8rem;
+    accent-color: #ffd764;
+    cursor: pointer;
+}
+.campo-input-checkbox label {
+    margin-bottom: 0; /* Reset margin de label general */
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.campo-input-checkbox i.fas { /* Iconos junto a checkboxes */
+   color: #ffd764;
+   font-size: 1.8rem;
 }
 
-.btn-submit:hover {
-    background: #ffd764;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 215, 100, 0.3);
+
+.formulario-acciones {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    grid-column: 1 / -1; /* Para que ocupe todo el ancho en grid */
 }
 
-.btn-submit:active {
-    transform: translateY(0);
+.formulario-acciones .btn-submit,
+.formulario-acciones .btn-accion {
+    flex-grow: 1; /* Para que los botones compartan el espacio */
+    justify-content: center;
 }
 
-/* ==========================================================================
-   Responsive
-   ========================================================================== */
-@media (max-width: 768px) {
-    .encabezado-Titulo {
-        font-size: 3rem;
+/* Responsive para el formulario */
+@media (max-width: 767px) {
+    .formulario-campos {
+        grid-template-columns: 1fr; /* Una columna en móviles */
     }
-
-    .contenedor-RegistrarMembresía {
-        padding: 2rem;
-    }
-
-    .formulario legend {
-        font-size: 2rem;
+    .formulario-acciones {
+        flex-direction: column;
     }
 }
 

@@ -32,6 +32,10 @@ app.use('/api', loginRoutes);
 const clienteRoutes = require('./routes/clienteRoutes'); // Asegúrate que el nombre del archivo sea correcto
 app.use('/api', clienteRoutes); // Todas las rutas de clientes estarán bajo /api
 
+// rutas para membresías
+const membresiaRoutes = require('./routes/membresiaRoutes');
+app.use('/api', membresiaRoutes); // Todas las rutas de membresías estarán bajo /api
+
 
 // Iniciar servidor
 app.listen(port, () => {

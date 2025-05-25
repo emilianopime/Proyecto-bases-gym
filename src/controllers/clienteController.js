@@ -192,13 +192,42 @@ async function updateCliente(req, res) {
     }
 }
 
-// TODO: Implementar deleteCliente si es necesario
-// async function deleteCliente(req, res) { ... }
+// Eliminar un cliente
+async function deleteCliente(req, res) {
+    let connection;
+    const { id } = req.params;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `DELETE FROM Clientes WHERE ClienteID = :id`,
+            [id],
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            return res.status(404).json({ message: 'Cliente no encontrado para eliminar.' });
+        }
+        res.json({ message: 'Cliente eliminado con éxito', clienteId: id });
+    } catch (err) {
+        console.error(`Error al eliminar cliente ${id}:`, err);
+        // Considerar manejo de errores de FK aquí si es necesario
+        res.status(500).json({ message: 'Error del servidor al eliminar el cliente: ' + err.message });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error('Error al cerrar conexión:', err);
+            }
+        }
+    }
+}
 
 module.exports = {
     getAllClientes,
     getClienteById,
     createCliente,
-    updateCliente
-    // deleteCliente
+    updateCliente,
+    deleteCliente // Asegúrate de que deleteCliente esté aquí
 };

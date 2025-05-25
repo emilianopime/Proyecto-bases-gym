@@ -10,7 +10,7 @@
 
     <body>
         <header class="encabezado">
-        <h1 class="encabezado-Titulo">Registro Membresía</h1>
+        <h1 class="encabezado-Titulo">Gestión de Tipos de Membresía</h1>
         <nav class="encabezado-Nav">
             <a href="hub.html" class="btn-regresar">
                 <i class="fas fa-arrow-left"></i> Regresar a inicio
@@ -18,78 +18,102 @@
         </nav>
     </header>
     <main class="contenedor">
-        <div class="contenedor-RegistrarMembresía">
-            <form class="formulario" id="formulario-membresía">
-                <fieldset>
-                    <legend>Registro de Membresia</legend>
-                    <div class="contenedor-RegistrarMembresía-Campos">
-                        <div class="campo">
-                            <label for="Nombre de membresía">Tipo de Membresia</label>
-                            <div class="campo-input">
-                                <i class="fas fa-clipboard-list"></i>
-                                <input class="input-text" type="text" id="Nombre de Membresía" name="Nombre de Membresía" placeholder="Ingrese el nombre de la Membresía" required>
+        <!-- Sección para mostrar la lista de membresías -->
+        <section id="seccionListaMembresias">
+            <h2>Tipos de Membresía Existentes</h2>
+            <button id="btnMostrarFormularioRegistroMembresia" class="btn-accion btn-primario">
+                <i class="fas fa-plus-circle"></i> Registrar Nuevo Tipo de Membresía
+            </button>
+            <div class="tabla-responsive">
+                <table class="tabla-moderna">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Precio ($)</th>
+                            <th>Duración (Días)</th>
+                            <th>Acceso Piscina</th>
+                            <th>Acceso Clases</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTablaMembresias">
+                        <!-- Las filas de membresías se cargarán aquí por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sección para registrar o editar una membresía (inicialmente oculta) -->
+        <section id="seccionRegistrarMembresia" style="display: none;">
+            <div class="contenedor-Formulario">
+                <form class="formulario" id="formulario-membresia">
+                    <fieldset>
+                        <legend>Datos del Tipo de Membresía</legend> <!-- El JS cambiará esto a "Editar" o "Nueva" -->
+                        <div class="formulario-campos">
+                            <div class="campo">
+                                <label for="nombreMembresia">Nombre del Tipo de Membresía</label>
+                                <div class="campo-input">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <input class="input-text" type="text" id="nombreMembresia" name="nombreMembresia" placeholder="Ej: Premium Mensual" required>
+                                </div>
+                            </div>
+
+                            <div class="campo">
+                                <label for="descripcionMembresia">Descripción</label>
+                                <div class="campo-input">
+                                    <i class="fas fa-info-circle"></i>
+                                    <textarea class="input-text" id="descripcionMembresia" name="descripcionMembresia" placeholder="Breve descripción de la membresía"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="campo">
+                                <label for="precioMembresia">Precio</label>
+                                <div class="campo-input">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <input class="input-text" type="number" id="precioMembresia" name="precioMembresia" placeholder="Ej: 29.99" step="0.01" min="0" required>
+                                </div>
+                            </div>
+    
+                            <div class="campo">
+                                <label for="duracionMembresia">Duración (días)</label>
+                                <div class="campo-input">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <input class="input-text" type="number" id="duracionMembresia" name="duracionMembresia" placeholder="Ej: 30" min="1" required>
+                                </div>
+                            </div>
+    
+                            <div class="campo campo-checkbox">
+                                <div class="campo-input-checkbox">
+                                    <input type="checkbox" id="accesoPiscinaMembresia" name="accesoPiscinaMembresia">
+                                    <label for="accesoPiscinaMembresia">¿Incluye Acceso a Piscina?</label>
+                                    <i class="fas fa-person-swimming"></i>
+                                </div>
+                            </div>
+    
+                            <div class="campo campo-checkbox">
+                                <div class="campo-input-checkbox">
+                                    <input type="checkbox" id="accesoClasesMembresia" name="accesoClasesMembresia">
+                                    <label for="accesoClasesMembresia">¿Incluye Acceso a Clases Grupales?</label>
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+    
+                            <div class="formulario-acciones">
+                                <button type="submit" class="btn-submit btn-primario">
+                                    <i class="fas fa-save"></i> Guardar Membresía 
+                                </button>
+                                <button type="button" id="btnCancelarRegistroMembresia" class="btn-accion btn-secundario">
+                                    <i class="fas fa-times-circle"></i> Cancelar
+                                </button>
                             </div>
                         </div>
-
-                        <div class="campo">
-                            <label for="Precio de la membresía">Precio Membresía</label>
-                            <div class="campo-input">
-                                <i class="fas fa-dollar-sign"></i>
-                                <input class="input-text" type="number" id="Precio Membresía" name="Precio Membresía" placeholder="Ingrese el precio de la Membresía" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="Duración de la Membresía">Duración de la membresía</label>
-                            <div class="campo-input">
-                                <i class="fas fa-calendar-alt"></i>
-                                <input class="input-text" type="date" id="Fecha de Duración de la membresía " name="Fecha de Duració de la Membresía" placeholder="Ingresa la fecha de Duración de la Membresía" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="Acceso a Pisina">Acceso a Pisina</label>
-                            <div class="campo-input">
-                                <i class="fas fa-key"></i>
-                                <input class="input-text" type="checkbox" id="Acceso a Pisina" name="Acceso a Pisina" placeholder="¿Tiene acceso a la Pisina?" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="Acceso a Gimnasio">Acceso a Gimnacio</label>
-                            <div class="campo-input">
-                                <i class="fas fa-key"></i>
-                                <input class="input-text" type="checkbox" id="Acceso a Gimnasio" name="Acceso a Gimnasio" placeholder="¿Tiene acceso a Gimnacio?" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label for="Descripción de Membresía">Descripción Membresia</label>
-                            <div class="campo-input">
-                                <i class="fas fa-info-circle"></i>
-                                <input class="input-text" type="text" id="Descripción de Tipo de Menbresía" name="Descripción de Tipo de Menbresía" placeholder="Descripción de Tipo de Menbresía" required>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <label>Clases Disponibles</label>
-                            <div class="campo-input" style="display: flex; flex-direction: column;">
-                                <label><input type="checkbox" name="ClasesAsociadas[]" value="1"> Yoga</label>
-                                <label><input type="checkbox" name="ClasesAsociadas[]" value="2"> Spinning</label>
-                                <label><input type="checkbox" name="ClasesAsociadas[]" value="3"> Crossfit</label>
-                                <label><input type="checkbox" name="ClasesAsociadas[]" value="4"> Zumba</label>
-                            </div>
-                        </div>
-
-                        <div class="campo">
-                            <button type="submit" class="btn-submit">
-                                <i class="fas fa-user-plus"></i> Registrar Membresía
-                            </button>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </section>
     </main>
+    <script src="../js/membresias.js"></script>
 </body>
 </html>
