@@ -539,10 +539,10 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
                 notas: formData.get('notas') || null
             };
             
-            // Debug: Log de datos del pago
+
             console.log('Datos del pago a enviar:', pagoData);
             
-            // Validaciones adicionales
+            // Validaciones 
             if (!pagoData.membresiaId) {
                 mostrarError('Debe seleccionar una membresía');
                 return;

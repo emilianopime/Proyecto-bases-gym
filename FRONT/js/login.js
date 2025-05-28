@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok && data.userId) {
         // Login exitoso
         localStorage.setItem('userId', data.userId);
-        localStorage.setItem('username', username);
+        localStorage.setItem('username', data.username); // Guardar el username retornado
+        localStorage.setItem('userRole', data.role); // Guardar el rol del usuario
         messageDiv.textContent = '¡Bienvenido! Redirigiendo...';
         setTimeout(() => {
           window.location.href = 'hub.html'; 

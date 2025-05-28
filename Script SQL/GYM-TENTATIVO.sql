@@ -1,6 +1,4 @@
--- Script de Base de Datos para Gestor de Gimnasios
--- Fecha de creación: 2025-05-24
--- Basado en la discusión y mejoras sugeridas.
+
 
 -- 1. Tabla Clientes
 CREATE TABLE Clientes (
@@ -136,10 +134,5 @@ CREATE TABLE NotasClientes (
     CONSTRAINT FK_NotasClientes_Usuario FOREIGN KEY (UsuarioID) REFERENCES UsuariosSistema(UsuarioID)
 );
 
--- Consideraciones Adicionales (No implementadas directamente en el script pero para tener en cuenta):
--- Índices: Crear índices en columnas usadas frecuentemente en búsquedas (WHERE) o JOINs para mejorar el rendimiento.
---        Ej: Clientes(ApellidoPaterno, PrimerNombre), ClientesMembresias(FechaFin), AsistenciaClases(FechaAsistencia).
--- Auditoría: Para tablas críticas, se podría implementar un sistema de auditoría (triggers) para rastrear cambios.
--- Backups y Mantenimiento: Planificar estrategias de backup y mantenimiento regular de la base de datos.
 
 COMMIT;
