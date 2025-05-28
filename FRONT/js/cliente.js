@@ -179,8 +179,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         clientes.forEach(cliente => {
             const fila = document.createElement('tr');
-            // Asegúrate que los nombres de las propiedades (cliente.clienteID, cliente.primerNombre, etc.)
-            // coincidan con lo que devuelve tu API.
             fila.innerHTML = `
                 <td>${cliente.clienteID || 'N/A'}</td>
                 <td>${cliente.primerNombre || ''} ${cliente.segundoNombre || ''} ${cliente.apellidoPaterno || ''} ${cliente.apellidoMaterno || ''}</td>
@@ -188,9 +186,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${cliente.correo || 'N/A'}</td>
                 <td>${cliente.membresiaActual || 'N/A'}</td>
                 <td>
-                    <button class="btn-accion-tabla btn-ver-perfil" data-clienteid="${cliente.clienteID}"><i class="fas fa-eye"></i></button>
-                    <button class="btn-accion-tabla btn-editar-cliente" data-clienteid="${cliente.clienteID}"><i class="fas fa-edit"></i></button>
-                    <button class="btn-accion-tabla btn-asignar-membresia" data-clienteid="${cliente.clienteID}"><i class="fas fa-id-card"></i></button>
+                    <button class="btn-accion-tabla btn-ver-perfil" data-clienteid="${cliente.clienteID}" title="Ver Perfil"><i class="fas fa-eye"></i></button>
+                    <button class="btn-accion-tabla btn-editar-cliente" data-clienteid="${cliente.clienteID}" title="Editar Cliente"><i class="fas fa-edit"></i></button>
+                    <button class="btn-accion-tabla btn-asignar-membresia" data-clienteid="${cliente.clienteID}" title="Asignar Membresía"><i class="fas fa-id-card"></i></button>
+                    <button class="btn-accion-tabla btn-eliminar-cliente" data-clienteid="${cliente.clienteID}" title="Eliminar Cliente"><i class="fas fa-trash-alt"></i></button>
                 </td>
             `;
             cuerpoTablaClientes.appendChild(fila);
@@ -200,7 +199,8 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', function() {
                 cargarYMostrarPerfilCliente(this.dataset.clienteid);
             });
-        });        document.querySelectorAll('.btn-editar-cliente').forEach(button => {
+        });
+        document.querySelectorAll('.btn-editar-cliente').forEach(button => {
             button.addEventListener('click', function() {
                 prepararEdicionCliente(this.dataset.clienteid);
             });
@@ -211,9 +211,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 abrirFormularioAsignarMembresia(this.dataset.clienteid);
             });
         });
-        // TODO: Añadir listeners para btn-asignar-membresia y otros si son necesarios
+
+        document.querySelectorAll('.btn-eliminar-cliente').forEach(button => {
+            button.addEventListener('click', function() {
+                eliminarCliente(this.dataset.clienteid);
+            });
+        });
     }
     
+    async function eliminarCliente(clienteId) {
+        if (!confirm(`¿Está seguro de que desea eliminar al cliente con ID ${clienteId}? Esta acción no se puede deshacer.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/clientes/${clienteId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Error del servidor: ${response.status}`);
+            }
+
+            const resultado = await response.json();
+            alert(resultado.message || 'Cliente eliminado con éxito.');
+            cargarClientes(); // Recargar la lista de clientes
+        } catch (error) {
+            console.error(`Error al eliminar cliente ${clienteId}:`, error);
+            alert(`Error al eliminar cliente: ${error.message}`);
+        }
+    }
+
     async function cargarYMostrarPerfilCliente(clienteId) {
         console.log(`Intentando cargar perfil para cliente ID: ${clienteId} desde el backend`);
         try {
@@ -389,24 +418,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!listaMembresiasCliente) return;
 
         if (!membresias || membresias.length === 0) {
-            listaMembresiasCliente.innerHTML = '<p><em>Este cliente no tiene membresías asignadas.</em></p>';
+            listaMembresiasCliente.innerHTML = '<p><em>Este cliente no tiene membresías asignadas activas o recientes.</em></p>';
             return;
         }
 
+        // Tomar solo la primera membresía (la más reciente según el backend)
+        const membresiaActual = membresias[0];
+
         let html = '<div class="membresias-cliente">';
-        membresias.forEach(membresia => {
-            const estadoClass = membresia.estado.toLowerCase();
-            html += `
-                <div class="membresia-item ${estadoClass}">
-                    <h4>${membresia.nombreMembresia}</h4>
-                    <p><strong>Estado:</strong> <span class="estado-${estadoClass}">${membresia.estado}</span></p>
-                    <p><strong>Período:</strong> ${membresia.fechaInicio} - ${membresia.fechaFin}</p>
-                    <p><strong>Monto Pagado:</strong> $${membresia.montoPagado || 'N/A'}</p>
-                    <p><strong>Método de Pago:</strong> ${membresia.tipoPago}</p>
-                    ${membresia.notas ? `<p><strong>Notas:</strong> ${membresia.notas}</p>` : ''}
-                </div>
-            `;
-        });
+        const estadoClass = membresiaActual.estado.toLowerCase();
+        html += `
+            <div class="membresia-item ${estadoClass}">
+                <h4>${membresiaActual.nombreMembresia}</h4>
+                <p><strong>Estado:</strong> <span class="estado-${estadoClass}">${membresiaActual.estado}</span></p>
+                <p><strong>Período:</strong> ${membresiaActual.fechaInicio} - ${membresiaActual.fechaFin}</p>
+                <p><strong>Monto Pagado:</strong> $${membresiaActual.montoPagado || 'N/A'}</p>
+                <p><strong>Método de Pago:</strong> ${membresiaActual.tipoPago}</p>
+                ${membresiaActual.notas ? `<p><strong>Notas:</strong> ${membresiaActual.notas}</p>` : ''}
+            </div>
+        `;
         html += '</div>';
         listaMembresiasCliente.innerHTML = html;
     }

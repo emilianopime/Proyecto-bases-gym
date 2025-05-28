@@ -274,11 +274,61 @@ async function getClasesEntrenador(req, res) {
     }
 }
 
+// Obtener clientes que han asistido a clases de un entrenador específico
+async function getClientesDeEntrenador(req, res) {
+    let connection;
+    const { entrenadorId } = req.params;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `SELECT DISTINCT
+                c.ClienteID,
+                c.PrimerNombre,
+                c.ApellidoPaterno,
+                c.Correo,
+                c.Telefono,
+                (SELECT COUNT(*) 
+                 FROM AsistenciaClases ac_inner 
+                 JOIN Clases cl_inner ON ac_inner.ClaseID = cl_inner.ClaseID
+                 WHERE ac_inner.ClienteID = c.ClienteID AND cl_inner.EntrenadorID = :entrenadorId AND ac_inner.Asistio = 1
+                ) AS NumeroAsistenciasConEntrenador
+             FROM Clientes c
+             JOIN AsistenciaClases ac ON c.ClienteID = ac.ClienteID
+             JOIN Clases cl ON ac.ClaseID = cl.ClaseID
+             WHERE cl.EntrenadorID = :entrenadorId AND ac.Asistio = 1
+             ORDER BY c.ApellidoPaterno, c.PrimerNombre`,
+            { entrenadorId: entrenadorId }
+        );
+
+        res.json(result.rows.map(row => ({
+            clienteID: row[0],
+            nombre: row[1],
+            apellido: row[2],
+            correo: row[3],
+            telefono: row[4],
+            numeroAsistenciasConEntrenador: row[5]
+        })));
+    } catch (err) {
+        console.error('Error al obtener clientes del entrenador ' + entrenadorId + ':', err);
+        res.status(500).json({ message: 'Error del servidor al obtener clientes del entrenador: ' + err.message });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error('Error al cerrar conexión:', err);
+            }
+        }
+    }
+}
+
 module.exports = {
     getAllEntrenadores,
     getEntrenadorById,
     createEntrenador,
     updateEntrenador,
     deleteEntrenador,
-    getClasesEntrenador
+    getClasesEntrenador,
+    getClientesDeEntrenador // Nueva función exportada
 };

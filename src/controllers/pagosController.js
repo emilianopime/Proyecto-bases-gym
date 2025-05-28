@@ -382,67 +382,72 @@ async function getEstadisticasPagos(req, res) {
             SELECT 
                 COUNT(*) AS TotalPagos,
                 COALESCE(SUM(MontoPagado), 0) AS IngresoTotal,
-                COALESCE(AVG(MontoPagado), 0) AS PromedioIngresos,
                 COUNT(CASE WHEN Estado = 'Activa' THEN 1 END) AS MembresiasActivas,
                 COUNT(CASE WHEN Estado = 'Pendiente' THEN 1 END) AS PagosPendientes
             FROM ClientesMembresias
-            WHERE FechaPago IS NOT NULL
+            WHERE FechaPago IS NOT NULL 
+        `);
+        // Nota: Se eliminó AVG(MontoPagado) de la consulta anterior, ya que no representa el promedio mensual de ingresos.
+
+        // Cálculo del Promedio Mensual (ingresos totales de los últimos 6 meses / 6)
+        const ingresosUltimos6MesesQuery = await connection.execute(`
+            SELECT COALESCE(SUM(MontoPagado), 0) AS TotalIngresos
+            FROM ClientesMembresias
+            WHERE FechaPago >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -5) -- Desde el inicio del mes, 5 meses atrás (cubre 6 meses en total con el actual)
+              AND FechaPago IS NOT NULL
         `);
         
-        // Ingresos por mes (últimos 6 meses)
-        const ingresosMesResult = await connection.execute(`
+        let promedioMensual = 0;
+        if (ingresosUltimos6MesesQuery.rows.length > 0) {
+            const totalIngresos6Meses = ingresosUltimos6MesesQuery.rows[0][0];
+            promedioMensual = totalIngresos6Meses / 6;
+        }
+
+        // Ingresos por mes para el desglose (últimos 6 meses)
+        const ingresosMesDesgloseResult = await connection.execute(`
             SELECT 
                 TO_CHAR(FechaPago, 'YYYY-MM') AS Mes,
                 SUM(MontoPagado) AS Ingresos,
                 COUNT(*) AS CantidadPagos
             FROM ClientesMembresias
-            WHERE FechaPago >= ADD_MONTHS(SYSDATE, -6)
+            WHERE FechaPago >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -5)
             AND FechaPago IS NOT NULL
             GROUP BY TO_CHAR(FechaPago, 'YYYY-MM')
             ORDER BY Mes DESC
         `);
         
-        // Tipos de pago más utilizados
-        const tiposPagoResult = await connection.execute(`
+        // Membresías más populares (Top 5)
+        const membresiasPopularesResult = await connection.execute(`
             SELECT 
-                tp.Nombre,
-                COUNT(*) AS Cantidad,
-                SUM(cm.MontoPagado) AS MontoTotal
+                m.Nombre AS NombreMembresia,
+                COUNT(cm.MembresiaID) AS Cantidad
             FROM ClientesMembresias cm
-            INNER JOIN TiposPago tp ON cm.TipoPagoID = tp.TipoPagoID
-            WHERE cm.FechaPago IS NOT NULL
-            GROUP BY tp.Nombre
+            JOIN Membresias m ON cm.MembresiaID = m.MembresiaID
+            WHERE cm.FechaPago IS NOT NULL 
+            GROUP BY m.Nombre
             ORDER BY Cantidad DESC
+            FETCH FIRST 5 ROWS ONLY
         `);
         
-        const stats = statsResult.rows[0];
-        const ingresosPorMes = ingresosMesResult.rows.map(row => ({
-            mes: row[0],
-            ingresos: row[1],
-            cantidadPagos: row[2]
-        }));
-        const tiposPago = tiposPagoResult.rows.map(row => ({
-            nombre: row[0],
-            cantidad: row[1],
-            montoTotal: row[2]
-        }));
-        
+        if (statsResult.rows.length === 0) {
+            // Aunque COUNT(*) debería devolver al menos una fila con 0 si no hay datos.
+            return res.status(404).json({ error: 'No se pudieron calcular las estadísticas básicas.' });
+        }
+
         res.json({
-            resumen: {
-                totalPagos: stats[0],
-                ingresoTotal: stats[1],
-                promedioIngresos: parseFloat(stats[2].toFixed(2)),
-                membresiasActivas: stats[3],
-                pagosPendientes: stats[4]
-            },
-            ingresosPorMes,
-            tiposPagoMasUsados: tiposPago
+            totalPagos: statsResult.rows[0][0],
+            totalRecaudado: statsResult.rows[0][1],
+            promedioMensual: promedioMensual, // Usar el promedio mensual calculado correctamente
+            membresiasActivas: statsResult.rows[0][2],
+            pagosPendientes: statsResult.rows[0][3],
+            ingresosUltimosMeses: ingresosMesDesgloseResult.rows.map(r => ({ mes: r[0], ingresos: r[1], cantidadPagos: r[2] })),
+            membresiasPopulares: membresiasPopularesResult.rows.map(r => ({ nombre: r[0], cantidad: r[1] }))
         });
         
     } catch (error) {
-        console.error('Error al obtener estadísticas:', error);
+        console.error('Error al obtener estadísticas de pagos:', error);
         res.status(500).json({ 
-            error: 'Error interno del servidor',
+            error: 'Error interno del servidor al obtener estadísticas',
             details: error.message 
         });
     } finally {
@@ -450,7 +455,7 @@ async function getEstadisticasPagos(req, res) {
             try {
                 await connection.close();
             } catch (error) {
-                console.error('Error al cerrar conexión:', error);
+                console.error('Error al cerrar conexión en getEstadisticasPagos:', error);
             }
         }
     }

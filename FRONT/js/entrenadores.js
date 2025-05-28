@@ -246,11 +246,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function cargarClientesEntrenador(entrenadorId) {
         try {
-            // Esta funcionalidad se puede implementar más tarde cuando se cree la relación entrenador-cliente
-            listaClientesEntrenador.innerHTML = '<p class="mensaje-info">Funcionalidad de clientes asignados en desarrollo</p>';
+            const response = await fetch(`/api/entrenadores/${entrenadorId}/clientes`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
+            }
+            const clientes = await response.json();
+            mostrarClientesEnPerfil(clientes);
         } catch (error) {
             console.error('Error al cargar clientes del entrenador:', error);
-            listaClientesEntrenador.innerHTML = '<p class="mensaje-error">Error al cargar los clientes</p>';
+            listaClientesEntrenador.innerHTML = `<p class="mensaje-error">Error al cargar los clientes: ${error.message}</p>`;
         }
     }
 
@@ -379,6 +384,31 @@ document.addEventListener('DOMContentLoaded', function() {
         `).join('');
 
         listaClasesEntrenador.innerHTML = listaHTML;
+    }
+
+    function mostrarClientesEnPerfil(clientes) {
+        if (!listaClientesEntrenador) return;
+
+        if (!clientes || clientes.length === 0) {
+            listaClientesEntrenador.innerHTML = '<p class="mensaje-vacio">Este entrenador aún no tiene clientes asignados directamente o que hayan asistido a sus clases.</p>';
+            return;
+        }
+
+        const listaHTML = clientes.map(cliente => `
+            <div class="item-lista cliente-item">
+                <div class="item-header">
+                    <h4>${cliente.nombre} ${cliente.apellido} (ID: ${cliente.clienteID})</h4>
+                </div>
+                <div class="item-details">
+                    <p><i class="fas fa-envelope"></i> ${cliente.correo || 'No especificado'}</p>
+                    <p><i class="fas fa-phone"></i> ${cliente.telefono || 'No especificado'}</p>
+                    <p><i class="fas fa-running"></i> Asistencias con este entrenador: ${cliente.numeroAsistenciasConEntrenador}</p>
+                </div>
+                <!-- Podrías añadir un botón para ver el perfil completo del cliente si esa funcionalidad existe -->
+            </div>
+        `).join('');
+
+        listaClientesEntrenador.innerHTML = listaHTML;
     }
 
     function filtrarEntrenadores(termino) {

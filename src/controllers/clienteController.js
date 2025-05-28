@@ -289,30 +289,116 @@ async function updateCliente(req, res) {
 // Eliminar un cliente
 async function deleteCliente(req, res) {
     let connection;
-    const { id } = req.params;
+    const { id } = req.params; // This is ClienteID
 
     try {
         connection = await oracledb.getConnection(dbConfig);
+
+        // 1. Delete associated memberships first
+        // No need to check count, just attempt deletion. If none, no rows affected.
+        await connection.execute(
+            `DELETE FROM ClientesMembresias WHERE ClienteID = :id`,
+            [id],
+            { autoCommit: false } // Part of the overall transaction
+        );
+
+        // 2. Verificar asistencias a clases (still prevent deletion if these exist)
+        const asistenciasResult = await connection.execute(
+            `SELECT COUNT(*) AS count FROM AsistenciaClases WHERE ClienteID = :id`,
+            [id]
+        );
+        if (asistenciasResult.rows[0][0] > 0) {
+            await connection.rollback();
+            return res.status(409).json({ message: 'No se puede eliminar el cliente porque tiene registros de asistencia a clases. Considere anonimizar o archivar estos registros si es necesario.' });
+        }
+
+        // 3. Verificar notas asociadas (still prevent deletion if these exist)
+        const notasResult = await connection.execute(
+            `SELECT COUNT(*) AS count FROM NotasClientes WHERE ClienteID = :id`,
+            [id]
+        );
+        if (notasResult.rows[0][0] > 0) {
+            await connection.rollback();
+            return res.status(409).json({ message: 'No se puede eliminar el cliente porque tiene notas asociadas. Por favor, elimine primero las notas o manéjelas según la política de la empresa.' });
+        }
+
+        // 4. Proceed with deleting the client itself
         const result = await connection.execute(
             `DELETE FROM Clientes WHERE ClienteID = :id`,
             [id],
-            { autoCommit: true }
+            { autoCommit: false } 
         );
 
         if (result.rowsAffected === 0) {
+            await connection.rollback(); 
             return res.status(404).json({ message: 'Cliente no encontrado para eliminar.' });
         }
-        res.json({ message: 'Cliente eliminado con éxito', clienteId: id });
+
+        await connection.commit(); 
+        res.json({ message: 'Cliente y sus membresías asociadas eliminados con éxito', clienteId: id });
+
     } catch (err) {
+        if (connection) {
+            try {
+                await connection.rollback(); // Changed from execute('ROLLBACK')
+            } catch (rollbackErr) {
+                console.error('Error al hacer rollback en deleteCliente:', rollbackErr);
+            }
+        }
         console.error(`Error al eliminar cliente ${id}:`, err);
-        // Considerar manejo de errores de FK aquí si es necesario
+        // Manejo de errores de OracleDB (ej. ORA-02292: integrity constraint violated - child record found)
+        if (err.errorNum && err.errorNum === 2292) {
+             return res.status(409).json({ message: 'Error de integridad: No se puede eliminar el cliente porque tiene registros relacionados en otras tablas que no fueron detectados por las verificaciones previas. Revise las membresías, asistencias o notas.' });
+        }
         res.status(500).json({ message: 'Error del servidor al eliminar el cliente: ' + err.message });
     } finally {
         if (connection) {
             try {
                 await connection.close();
             } catch (err) {
-                console.error('Error al cerrar conexión:', err);
+                console.error('Error al cerrar conexión en deleteCliente:', err);
+            }
+        }
+    }
+}
+
+// Nueva función para eliminar una membresía específica de un cliente
+async function deleteClienteMembresia(req, res) {
+    let connection;
+    const { clienteId, clienteMembresiaId } = req.params;
+
+    if (!clienteId || !clienteMembresiaId) {
+        return res.status(400).json({ message: 'Los IDs de cliente y membresía del cliente son obligatorios.' });
+    }
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `DELETE FROM ClientesMembresias 
+             WHERE ClienteID = :clienteId AND ClienteMembresiaID = :clienteMembresiaId`,
+            {
+                clienteId: parseInt(clienteId),
+                clienteMembresiaId: parseInt(clienteMembresiaId)
+            },
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected === 0) {
+            return res.status(404).json({ message: 'Membresía del cliente no encontrada o ya eliminada.' });
+        }
+
+        res.json({ message: 'Membresía del cliente eliminada con éxito', clienteId, clienteMembresiaId });
+
+    } catch (err) {
+        console.error(`Error al eliminar membresía ${clienteMembresiaId} del cliente ${clienteId}:`, err);
+        // Check for specific Oracle errors if needed, e.g., foreign key constraints if this table was a parent
+        res.status(500).json({ message: 'Error del servidor al eliminar la membresía del cliente: ' + err.message });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error('Error al cerrar conexión en deleteClienteMembresia:', err);
             }
         }
     }
@@ -537,7 +623,8 @@ module.exports = {
     getClienteById,
     createCliente,
     updateCliente,
-    deleteCliente,
+    deleteCliente, // Modified
+    deleteClienteMembresia, // Added
     getMembresiasDisponibles,
     asignarMembresia,
     getMembresiasCliente,

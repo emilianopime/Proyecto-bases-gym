@@ -14,6 +14,7 @@ router.delete('/clientes/:id', clienteController.deleteCliente);
 router.get('/membresias-disponibles', clienteController.getMembresiasDisponibles);
 router.post('/clientes/:clienteId/membresias', clienteController.asignarMembresia);
 router.get('/clientes/:clienteId/membresias', clienteController.getMembresiasCliente);
+router.delete('/clientes/:clienteId/membresias/:clienteMembresiaId', clienteController.deleteClienteMembresia);
 router.post('/actualizar-membresias-vencidas', clienteController.actualizarMembresiasVencidas);
 
 module.exports = router;

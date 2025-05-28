@@ -9,5 +9,6 @@ router.post('/entrenadores', entrenadorController.createEntrenador);
 router.put('/entrenadores/:id', entrenadorController.updateEntrenador);
 router.delete('/entrenadores/:id', entrenadorController.deleteEntrenador);
 router.get('/entrenadores/:id/clases', entrenadorController.getClasesEntrenador);
+router.get('/entrenadores/:id/clientes', entrenadorController.getClientesDeEntrenador); // Nueva ruta
 
 module.exports = router;
