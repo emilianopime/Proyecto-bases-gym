@@ -1,7 +1,6 @@
 const oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig.js');
 
-// Obtener todas las asistencias con información detallada
 async function getAllAsistencias(req, res) {
     let connection;
     try {
@@ -61,7 +60,6 @@ async function getAllAsistencias(req, res) {
     }
 }
 
-// Obtener clases programadas para hoy o una fecha específica
 async function getClasesDelDia(req, res) {
     let connection;
     try {
@@ -70,7 +68,6 @@ async function getClasesDelDia(req, res) {
         
         connection = await oracledb.getConnection(dbConfig);
         
-        // Obtener el día de la semana en español
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         const fechaObj = new Date(fechaConsulta + 'T00:00:00');
         const diaSemana = diasSemana[fechaObj.getDay()];
@@ -133,7 +130,6 @@ async function getClasesDelDia(req, res) {
     }
 }
 
-// Buscar clientes para registro de asistencia
 async function buscarClientes(req, res) {
     let connection;
     try {
@@ -197,13 +193,11 @@ async function buscarClientes(req, res) {
     }
 }
 
-// Registrar asistencia de un cliente a una clase
 async function registrarAsistencia(req, res) {
     let connection;
     try {
         const { clienteId, claseId, fechaAsistencia, horaCheckIn, asistio } = req.body;
         
-        // Validaciones básicas
         if (!clienteId || !claseId || !fechaAsistencia) {
             return res.status(400).json({ 
                 error: 'Faltan datos requeridos: clienteId, claseId, fechaAsistencia' 
@@ -212,7 +206,6 @@ async function registrarAsistencia(req, res) {
         
         connection = await oracledb.getConnection(dbConfig);
         
-        // Verificar si ya existe un registro de asistencia para este cliente, clase y fecha
         const existeRegistro = await connection.execute(`
             SELECT AsistenciaID FROM AsistenciaClases 
             WHERE ClienteID = :clienteId 
@@ -226,7 +219,6 @@ async function registrarAsistencia(req, res) {
             });
         }
         
-        // Verificar capacidad de la clase
         const capacidadResult = await connection.execute(`
             SELECT 
                 c.CapacidadMaxima,
@@ -250,7 +242,6 @@ async function registrarAsistencia(req, res) {
             });
         }
         
-        // Insertar registro de asistencia
         const result = await connection.execute(`
             INSERT INTO AsistenciaClases 
             (ClienteID, ClaseID, FechaAsistencia, HoraCheckIn, Asistio)
@@ -297,7 +288,6 @@ async function registrarAsistencia(req, res) {
     }
 }
 
-// Actualizar asistencia (marcar/desmarcar asistencia)
 async function actualizarAsistencia(req, res) {
     let connection;
     try {
@@ -352,7 +342,6 @@ async function actualizarAsistencia(req, res) {
     }
 }
 
-// Eliminar registro de asistencia
 async function eliminarAsistencia(req, res) {
     let connection;
     try {
@@ -400,7 +389,6 @@ async function eliminarAsistencia(req, res) {
     }
 }
 
-// Obtener estadísticas de asistencia
 async function getEstadisticasAsistencia(req, res) {
     let connection;
     try {

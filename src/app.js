@@ -1,21 +1,21 @@
-/* ==========================================================================
-   Para importar los modulos expres, oracledb, y acceder a los datos de la dba  #NODULOS NODEJS
-   ========================================================================== */
-const express = require('express'); 
+// ==========================================================================
+// Para importar los modulos expres, oracledb, y acceder a los datos de la dba  #NODULOS NODEJS
+// ==========================================================================
+const express = require('express');
 const oracledb = require('oracledb');
 const dbConfig = require('./config/dbconfig.js');
 const path = require('path');
 const app = express();
 const port = process.env.port || 3000;
-/* ==========================================================================
-    Middleware para formularios
-   ========================================================================== */
+// ==========================================================================
+// Middleware para formularios
+// ==========================================================================
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-/* ==========================================================================
-rutas para las paginas
-========================================================================== */
+// ==========================================================================
+// rutas para las paginas
+// ==========================================================================
 // Servir archivos estáticos (HTML, CSS, JS, imágenes)
 const frontPath = path.resolve(__dirname, '../FRONT');
 console.log('Sirviendo archivos estáticos desde:', frontPath);
