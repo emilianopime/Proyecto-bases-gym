@@ -98,7 +98,6 @@ Aplicación web para la gestión de gimnasios. Permite administrar clientes, mem
     *   `app.js`: Archivo principal del servidor Express.
 *   `package.json`: Define las dependencias y scripts del proyecto.
 *   `generarHash.js`: Utilidad para generar hashes de contraseñas.
-*   `insertarUsuario.js`: Utilidad para crear/actualizar un usuario 'admin' (configurable).
 *   `insertTestUser.js`: Utilidad para crear/actualizar un usuario de prueba 'testuser'.
 
 ## Solución de Problemas Comunes
