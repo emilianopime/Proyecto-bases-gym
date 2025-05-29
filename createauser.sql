@@ -10,5 +10,5 @@ VALUES (
 );
 
 
-usuario: testuser
-contraseña: temp123
+--usuario: testuser
+--contraseña: temp123
