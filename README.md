@@ -47,18 +47,26 @@ Aplicación web para la gestión de gimnasios. Permite administrar clientes, mem
     npm install
     ```
 
-5.  **Crear un Usuario Administrador (si no lo hiciste con el script SQL):**
-    *   **Opción A (Recomendado - Usando el script provisto):**
-        El script `insertarUsuario.js` está diseñado para crear o actualizar un usuario 'admin' con contraseña '12345' (o 'admin2' con '123456' según la última configuración). Asegúrate de que el script esté configurado con el `Username` y `Correo` que desees y que no entren en conflicto con datos existentes.
-        ```bash
-        node insertarUsuario.js
-        ```
-        Si encuentras errores de restricción única (`ORA-00001`), revisa que el `Username` y `Correo` que el script intenta insertar/actualizar sean únicos o ajusta el script.
+5.  **Crear Usuarios de Prueba/Administrador:**
+    *   **Opción A (Recomendado - Usando scripts provistos):**
+        *   **Para un usuario 'admin' genérico (configurable):**
+            El script `insertarUsuario.js` (anteriormente mencionado) puede ser usado o adaptado para crear un usuario administrador principal.
+            ```bash
+            node insertarUsuario.js 
+            ```
+            Asegúrate de que el `Username` y `Correo` dentro de este script sean únicos.
+
+        *   **Para un usuario de prueba 'testuser' (contraseña: 'temp123'):**
+            El script `insertTestUser.js` está diseñado para crear o actualizar un usuario específico llamado `testuser` con la contraseña `temp123` y correo `testuser@gym.com`.
+            ```bash
+            node insertTestUser.js
+            ```
+            Este script maneja conflictos si el `Username` o `Correo` ya existen.
 
     *   **Opción B (Manualmente con SQL):**
         Puedes generar un hash para una contraseña usando `generarHash.js`:
         ```bash
-        node generarHash.js 
+        node generarHash.js
         ```
         Copia el hash generado y úsalo en una sentencia `INSERT` en tu herramienta de base de datos:
         ```sql
@@ -84,7 +92,7 @@ Aplicación web para la gestión de gimnasios. Permite administrar clientes, mem
 
 7.  **Acceder a la Aplicación:**
     Abre tu navegador web y ve a `http://localhost:3000/HTML/login.html`.
-    Intenta iniciar sesión con el usuario administrador que creaste (ej. `admin` / `12345`).
+    Intenta iniciar sesión con el usuario `testuser` (contraseña: `temp123`) o el usuario administrador que hayas configurado.
 
 ## Estructura del Proyecto (Resumen)
 
@@ -97,7 +105,8 @@ Aplicación web para la gestión de gimnasios. Permite administrar clientes, mem
     *   `app.js`: Archivo principal del servidor Express.
 *   `package.json`: Define las dependencias y scripts del proyecto.
 *   `generarHash.js`: Utilidad para generar hashes de contraseñas.
-*   `insertarUsuario.js`: Utilidad para crear/actualizar usuarios administradores.
+*   `insertarUsuario.js`: Utilidad para crear/actualizar un usuario 'admin' (configurable).
+*   `insertTestUser.js`: Utilidad para crear/actualizar un usuario de prueba 'testuser'.
 
 ## Solución de Problemas Comunes
 
