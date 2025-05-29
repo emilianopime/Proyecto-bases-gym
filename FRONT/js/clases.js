@@ -482,7 +482,7 @@ class ClasesManager {
     // Notificaciones
     // ==========================================================================
     showNotification(message, type = 'info') {
-        // Crear elemento de notificación
+        // Notificación
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.style.cssText = `
@@ -498,7 +498,7 @@ class ClasesManager {
             transition: transform 0.3s ease;
         `;
         
-        // Colores según el tipo
+        // Colores
         switch (type) {
             case 'success':
                 notification.style.background = '#10b981';
@@ -521,7 +521,7 @@ class ClasesManager {
             notification.style.transform = 'translateX(0)';
         }, 100);
         
-        // Ocultar después de 5 segundos
+        // Ocultar 
         setTimeout(() => {
             notification.style.transform = 'translateX(100%)';
             setTimeout(() => {

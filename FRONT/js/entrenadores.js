@@ -1,4 +1,3 @@
-// Script para la funcionalidad del Módulo de Entrenadores
 document.addEventListener('DOMContentLoaded', function() {
     // --- SELECCIÓN DE ELEMENTOS DEL DOM ---
     const btnMostrarFormularioRegistro = document.getElementById('btnMostrarFormularioRegistro');
@@ -56,15 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
             pestaña.addEventListener('click', function() {
                 const pestañaTarget = this.dataset.pestaña;
 
-                // Remover clase activa de todas las pestañas y contenidos
                 pestañas.forEach(p => p.classList.remove('activa'));
                 contenidosPestaña.forEach(c => c.classList.remove('activa'));
 
-                // Agregar clase activa a la pestaña seleccionada
                 this.classList.add('activa');
                 document.getElementById(`pestaña-${pestañaTarget}`).classList.add('activa');
 
-                // Cargar contenido específico si es necesario
                 if (pestañaTarget === 'clases' && entrenadorActual) {
                     cargarClasesEntrenador(entrenadorActual.entrenadorID);
                 } else if (pestañaTarget === 'clientes' && entrenadorActual) {
@@ -465,7 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Agregar al DOM
         document.body.appendChild(mensajeDiv);
 
-        // Remover después de 5 segundos
+        // Remover
         setTimeout(() => {
             if (mensajeDiv.parentNode) {
                 mensajeDiv.parentNode.removeChild(mensajeDiv);
@@ -473,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
 
-    // --- FUNCIONES GLOBALES (para onclick en HTML generado dinámicamente) ---
+    // --- FUNCIONES GLOBALES) ---
     window.verPerfilEntrenador = async function(id) {
         const entrenador = await obtenerEntrenadorPorId(id);
         if (entrenador) {

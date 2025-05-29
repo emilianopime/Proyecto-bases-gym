@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función de búsqueda en tiempo real
+    // Función de búsqueda
     function configurarBusqueda() {
         const inputBusqueda = document.getElementById('busqueda-membresias');
         if (!inputBusqueda) return;

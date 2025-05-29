@@ -1,4 +1,3 @@
-// Script para la funcionalidad del Módulo de Pagos
 document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS DEL DOM ===
     const btnRegistrarPago = document.getElementById('btnRegistrarPago');
     const btnFirstPayment = document.getElementById('btnFirstPayment');
@@ -9,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
     const seccionListaPagos = document.getElementById('seccionListaPagos');
     const seccionFormularioPago = document.getElementById('seccionFormularioPago');
     
-    // Validar elementos críticos
+    // Validar elementos
     if (!seccionListaPagos) {
         console.error('CRITICAL ERROR: seccionListaPagos not found');
         return;
@@ -79,22 +78,19 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
     }
 
     function mostrarError(mensaje) {
-        // Implement a more sophisticated error display if needed (e.g., a toast notification)
         console.error(mensaje);
-        alert(mensaje); // Simple alert for now
+        alert(mensaje);
     }
 
     function mostrarExito(mensaje) {
-        // Implement a more sophisticated success display (e.g., a toast notification)
         console.log(mensaje);
-        alert(mensaje); // Simple alert for now
+        alert(mensaje);
     }
 
     function formatearFecha(fechaISO) {
         if (!fechaISO) return 'N/A';
         try {
             const fecha = new Date(fechaISO);
-            // Ajustar por la zona horaria local si la fecha viene en UTC y se interpreta mal
             const userTimezoneOffset = fecha.getTimezoneOffset() * 60000;
             const correctedDate = new Date(fecha.getTime() + userTimezoneOffset);
             
@@ -111,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
     function formatearPeriodo(fechaInicioISO, fechaFinISO) {
         if (!fechaInicioISO || !fechaFinISO) return 'N/A';
         return `${formatearFecha(fechaInicioISO)} - ${formatearFecha(fechaFinISO)}`;
-    }    // === FUNCIONES DE NAVEGACIÓN ===
+    }    
+    // === FUNCIONES DE NAVEGACIÓN ===
     function mostrarSeccion(seccion) {
         console.log(`Mostrando sección: ${seccion}`);
         
@@ -613,12 +610,12 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
                 // Mostrar formulario PRIMERO
                 mostrarSeccion('formulario');
                 
-                // Después limpiar y configurar
+                // Limpiar y configurar
                 setTimeout(() => {
                     limpiarFormulario();
                     formLegend.textContent = 'Registrar Nuevo Pago';
                     
-                    // Asegurarse que el botón de submit del formulario diga "Registrar Pago"
+                    // Registrar Pago
                     const submitButton = formularioPago.querySelector('button[type="submit"]');
                     if (submitButton) {
                         submitButton.innerHTML = '<i class="fas fa-save"></i> Registrar Pago';
@@ -639,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
                 limpiarFormulario();
                 mostrarSeccion('formulario');
                 formLegend.textContent = 'Registrar Primer Pago';
-                 // Asegurarse que el botón de submit del formulario diga "Registrar Pago"
+                 // Ver que el botón de submit del formulario diga "Registrar Pago"
                 const submitButton = formularioPago.querySelector('button[type="submit"]');
                 if (submitButton) {
                     submitButton.innerHTML = '<i class="fas fa-save"></i> Registrar Pago';
@@ -692,14 +689,14 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
     function init() {
         console.log("Inicializando módulo de pagos...");
         
-        // Verificar elementos críticos
+        // Verificar elementos
         console.log('btnRegistrarPago encontrado:', !!btnRegistrarPago);
         console.log('seccionListaPagos encontrado:', !!seccionListaPagos);
         console.log('seccionFormularioPago encontrado:', !!seccionFormularioPago);
         console.log('formularioPago encontrado:', !!formularioPago);
         
-        mostrarSeccion('lista'); // Mostrar lista por defecto
-        toggleVista(); // Configurar vista inicial (tabla o tarjetas)
+        mostrarSeccion('lista'); 
+        toggleVista();
         
         cargarPagos();
         cargarTiposPago();
@@ -707,18 +704,18 @@ document.addEventListener('DOMContentLoaded', function() {    // === ELEMENTOS D
         
         configurarFormulario();
         configurarBusqueda();
-        inicializarEventListeners(); // Asegurarse que los event listeners se inicializan
+        inicializarEventListeners(); // Ver que los event listeners se inicializan
         console.log("Módulo de pagos inicializado.");
     }
 
     init(); 
 });
 
-// Hacer funciones globales para ser llamadas desde HTML (si es necesario para botones en tabla/tarjetas)
+// Funciones globales para ser llamadas desde HTM
 window.verDetallePago = async function(pagoId) {
     console.log(`Ver detalle del pago ID: ${pagoId}`);
     try {
-        const pago = pagosData.find(p => p.clienteMembresiaId === pagoId); // Corrected clienteMembresiaId to pagoId
+        const pago = pagosData.find(p => p.clienteMembresiaId === pagoId);
         if (!pago) {
             mostrarError('No se encontraron los detalles del pago');
             return;
@@ -767,30 +764,24 @@ window.editarPago = async function(pagoId) {
 
     editandoPago = pagoId; // Guardar el ID del pago que se está editando
     
-    // Simular la selección del cliente
-    // Esto es un workaround si no tenemos todos los datos del cliente en el objeto 'pago'
-    // Idealmente, el objeto 'pago' debería tener clienteId y nombreCompleto
+    // Selección del cliente
     if (pago.clienteId && pago.nombreCliente) {
         seleccionarCliente({ 
             clienteId: pago.clienteId, 
             nombreCompleto: pago.nombreCliente,
-            // Podrías necesitar más detalles del cliente aquí si el backend los provee con el pago
             telefono: pago.telefonoCliente || '', 
             estadoMembresia: pago.estadoMembresiaCliente || 'Desconocido'
         });
     } else {
-        // Si no tenemos datos del cliente, al menos limpiar la selección actual
-        // y permitir buscarlo si es necesario (aunque para editar no debería ser necesario cambiarlo)
         clienteActual = null;
         buscarCliente.style.display = 'block';
         clienteSeleccionado.classList.add('hidden');
-        // Podrías querer deshabilitar la búsqueda de cliente aquí, ya que estamos editando un pago existente.
     }
 
     // Llenar el formulario
     if(membresiaSelect) membresiaSelect.value = pago.membresiaId;
     if(montoPagar) montoPagar.value = pago.montoPagado;
-    if(tipoPago) tipoPago.value = pago.tipoPagoId; // Asumiendo que tipoPagoId es el valor correcto
+    if(tipoPago) tipoPago.value = pago.tipoPagoId;
     if(fechaPago) fechaPago.value = pago.fechaPago ? pago.fechaPago.split('T')[0] : '';
     if(fechaInicio) fechaInicio.value = pago.fechaInicio ? pago.fechaInicio.split('T')[0] : '';
     const notasTextarea = formularioPago.querySelector('#notas');
@@ -803,14 +794,11 @@ window.editarPago = async function(pagoId) {
         submitButton.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
     }
     
-    // Actualizar precio de membresía si es posible
+    // Actualizar precio de membresía
     const selectedMembresiaOption = membresiaSelect.options[membresiaSelect.selectedIndex];
     if (selectedMembresiaOption && selectedMembresiaOption.dataset.precio) {
         precioMembresia.textContent = parseFloat(selectedMembresiaOption.dataset.precio).toFixed(2);
     } else {
-        // Si no se puede obtener el precio de la membresía (ej. la membresía ya no existe)
-        // se podría mostrar el monto pagado o un mensaje.
-        // Por ahora, si no hay precio en dataset, se deja como está o se pone el monto pagado.
         precioMembresia.textContent = parseFloat(pago.montoPagado).toFixed(2);
     }
     

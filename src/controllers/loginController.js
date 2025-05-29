@@ -1,6 +1,6 @@
 const oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig.js');
-const bcrypt = require('bcrypt'); // Importar bcrypt
+const bcrypt = require('bcrypt'); // Importar bcrypt para hash
 
 exports.login = async (req, res) => {
   let connection;
@@ -30,7 +30,6 @@ exports.login = async (req, res) => {
       const match = await bcrypt.compare(password, passwordHash);
 
       if (match) {
-        // En una aplicación real, aquí se generaría un token JWT o se iniciaría una sesión
         res.json({ 
           userId: userId, 
           username: storedUsername, 
@@ -57,8 +56,6 @@ exports.login = async (req, res) => {
   }
 };
 
-// Función para registrar un nuevo usuario (ejemplo básico)
-// En una aplicación real, esto tendría más validaciones y posiblemente un endpoint separado.
 exports.registerUsuario = async (req, res) => {
   let connection;
   const { nombreCompleto, username, password, rol, correo } = req.body;
@@ -85,7 +82,7 @@ exports.registerUsuario = async (req, res) => {
         correo: correo || null,
         out_id: { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
       },
-      { autoCommit: true } // autoCommit para INSERT
+      { autoCommit: true }
     );
 
     if (result.outBinds && result.outBinds.out_id) {
@@ -99,7 +96,6 @@ exports.registerUsuario = async (req, res) => {
 
   } catch (err) {
     console.error("Error al registrar usuario:", err);
-    // Manejar errores específicos, como username duplicado (ORA-00001)
     if (err.errorNum === 1) {
         return res.status(409).json({ message: "Error al registrar usuario: El nombre de usuario o correo ya existe." });
     }
