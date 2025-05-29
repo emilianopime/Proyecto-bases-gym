@@ -387,9 +387,8 @@ async function getEstadisticasPagos(req, res) {
             FROM ClientesMembresias
             WHERE FechaPago IS NOT NULL 
         `);
-        // Nota: Se eliminó AVG(MontoPagado) de la consulta anterior, ya que no representa el promedio mensual de ingresos.
 
-        // Cálculo del Promedio Mensual (ingresos totales de los últimos 6 meses / 6)
+        // Cálculo del Promedio Mensual (6 meses)
         const ingresosUltimos6MesesQuery = await connection.execute(`
             SELECT COALESCE(SUM(MontoPagado), 0) AS TotalIngresos
             FROM ClientesMembresias
@@ -430,14 +429,13 @@ async function getEstadisticasPagos(req, res) {
         `);
         
         if (statsResult.rows.length === 0) {
-            // Aunque COUNT(*) debería devolver al menos una fila con 0 si no hay datos.
             return res.status(404).json({ error: 'No se pudieron calcular las estadísticas básicas.' });
         }
 
         res.json({
             totalPagos: statsResult.rows[0][0],
             totalRecaudado: statsResult.rows[0][1],
-            promedioMensual: promedioMensual, // Usar el promedio mensual calculado correctamente
+            promedioMensual: promedioMensual,
             membresiasActivas: statsResult.rows[0][2],
             pagosPendientes: statsResult.rows[0][3],
             ingresosUltimosMeses: ingresosMesDesgloseResult.rows.map(r => ({ mes: r[0], ingresos: r[1], cantidadPagos: r[2] })),

@@ -2,12 +2,12 @@
 const oracledb = require('oracledb');
 const dbConfig = require('../config/dbconfig.js');
 
-// Función auxiliar para obtener el estado real de una membresía considerando la fecha actual
+// Función auxiliar para obtener el estado de una membresía considerando la fecha actual
 function getEstadoRealMembresia(estado, fechaFin) {
     const ahora = new Date();
     const fechaFinDate = new Date(fechaFin);
     
-    // Si está marcada como activa pero ya venció, devolver 'Vencida'
+    // Vencida
     if (estado === 'Activa' && fechaFinDate < ahora) {
         return 'Vencida';
     }
@@ -47,7 +47,7 @@ async function getAllClientes(req, res) {
                 apellidoPaterno: row[3],
                 apellidoMaterno: row[4],
                 telefono: row[5],
-                correo: row[6], // Corresponds to c.Correo
+                correo: row[6],
                 membresiaActual: row[7] || 'N/A'
             };
         }));
@@ -105,10 +105,10 @@ async function getClienteById(req, res) {
             correo: dbRow[7],
             genero: dbRow[8],
             fechaRegistro: dbRow[9],
-            currentMembresiaID: dbRow[10] // Added currentMembresiaID
+            currentMembresiaID: dbRow[10]
         });
     } catch (err) {
-        console.error(`Error al obtener cliente ${id}:`, err); // Corrected template literal
+        console.error(`Error al obtener cliente ${id}:`, err);
         res.status(500).json({ message: 'Error del servidor al obtener el cliente: ' + err.message });
     } finally {
         if (connection) {
@@ -130,7 +130,6 @@ async function createCliente(req, res) {
         return res.status(400).json({ message: 'Faltan campos obligatorios.' });
     }
 
-    // FechaRegistro se maneja con DEFAULT SYSDATE en la tabla Clientes
     const sql = `INSERT INTO Clientes (PrimerNombre, SegundoNombre, ApellidoPaterno, ApellidoMaterno, FechaNacimiento, Telefono, Correo, Genero)
                  VALUES (:primerNombre, :segundoNombre, :apellidoPaterno, :apellidoMaterno, TO_DATE(:fechaNacimiento, 'YYYY-MM-DD'), :telefono, :correo, :genero)
                  RETURNING ClienteID INTO :out_id_cliente`;
@@ -155,7 +154,6 @@ async function createCliente(req, res) {
 
             if (membresia && membresia !== '') {
                 try {
-                    // For initial assignment during client creation, TipoPagoID and Notas might be null
                     await asignarMembresiaACliente(connection, clienteId, membresia, null, null);
                     await connection.commit();
                     res.status(201).json({
@@ -163,24 +161,23 @@ async function createCliente(req, res) {
                         clienteId: clienteId
                     });
                 } catch (membresiaError) {
-                    await connection.rollback(); // Rollback if membership assignment fails
+                    await connection.rollback();
                     console.error('Cliente creado pero error al asignar membresía inicial:', membresiaError);
-                    // Send a specific error or a generic one, but indicate client was created then failed
                     res.status(500).json({ message: 'Cliente creado, pero falló la asignación de membresía: ' + membresiaError.message, clienteId: clienteId, partialSuccess: true });
                 }
             } else {
-                await connection.commit(); // Commit if no membership to assign
+                await connection.commit();
                 res.status(201).json({
                     message: 'Cliente creado con éxito',
                     clienteId: clienteId
                 });
             }
         } else {
-            await connection.rollback(); // Rollback if client ID not returned
+            await connection.rollback();
             throw new Error('No se pudo obtener el ID del cliente creado.');
         }
     } catch (err) {
-        if (connection && !err.partialSuccess) { // Avoid double rollback if already handled
+        if (connection && !err.partialSuccess) {
             try {
                 await connection.rollback();
             } catch (rollbackErr) {
@@ -204,8 +201,6 @@ async function createCliente(req, res) {
 async function updateCliente(req, res) {
     let connection;
     const { id } = req.params;
-    // Include membresiaId, metodoPago, and notas from req.body
-    // Correctly alias req.body.membresia to membresiaId
     const { primerNombre, segundoNombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, telefono, correo, genero, membresia: membresiaId, metodoPago, notas } = req.body;
 
     if (!primerNombre || !apellidoPaterno || !fechaNacimiento || !telefono || !correo || !genero) {
@@ -236,42 +231,33 @@ async function updateCliente(req, res) {
 
     try {
         connection = await oracledb.getConnection(dbConfig);
-        // Start transaction
         await connection.execute(sqlUpdateCliente, bindsCliente, { autoCommit: false });
 
         let membershipMessage = '';
-        // If membresiaId is provided, attempt to assign/update it
         if (membresiaId && membresiaId !== '' && membresiaId !== null && membresiaId !== undefined) {
             try {
-                // It's important that asignarMembresiaACliente uses the same connection
-                // and does not commit or rollback itself if called as part of a larger transaction.
-                // The current implementation of asignarMembresiaACliente seems to be standalone
-                // and does not accept an option to skip commit, which is fine if it's the last step
-                // or if we manage the transaction entirely here.
-                // For ahora, we assume asignarMembresiaACliente will correctly handle its part.
                 await asignarMembresiaACliente(connection, id, membresiaId, metodoPago, notas);
                 membershipMessage = ' y membresía actualizada';
             } catch (membresiaError) {
-                await connection.rollback(); // Rollback if membership assignment fails
+                await connection.rollback();
                 console.error(`Error al asignar membresía durante la actualización del cliente ${id}:`, membresiaError);
                 return res.status(500).json({ message: 'Error al actualizar la membresía del cliente: ' + membresiaError.message });
             }
         }
 
-        await connection.commit(); // Commit all changes (client details and potentially membership)
+        await connection.commit();
         res.json({ message: `Cliente actualizado con éxito${membershipMessage}`, clienteId: id });
 
     } catch (err) {
         if (connection) {
             try {
-                await connection.rollback(); // Rollback on any other error
+                await connection.rollback();
             } catch (rollbackErr) {
                 console.error('Error al hacer rollback en updateCliente:', rollbackErr);
             }
         }
         console.error(`Error al actualizar cliente ${id}:`, err);
-        // Check if the error is because the client was not found by the initial update
-        if (err.errorNum === 0 && err.offset === 0 && result && result.rowsAffected === 0) { // Heuristic for no rows affected
+        if (err.errorNum === 0 && err.offset === 0 && result && result.rowsAffected === 0) {
              return res.status(404).json({ message: 'Cliente no encontrado para actualizar.'});
         }
         res.status(500).json({ message: 'Error del servidor al actualizar el cliente: ' + err.message });
@@ -289,20 +275,16 @@ async function updateCliente(req, res) {
 // Eliminar un cliente
 async function deleteCliente(req, res) {
     let connection;
-    const { id } = req.params; // This is ClienteID
+    const { id } = req.params;
 
     try {
         connection = await oracledb.getConnection(dbConfig);
-
-        // 1. Delete associated memberships first
-        // No need to check count, just attempt deletion. If none, no rows affected.
         await connection.execute(
             `DELETE FROM ClientesMembresias WHERE ClienteID = :id`,
             [id],
-            { autoCommit: false } // Part of the overall transaction
+            { autoCommit: false }
         );
 
-        // 2. Verificar asistencias a clases (still prevent deletion if these exist)
         const asistenciasResult = await connection.execute(
             `SELECT COUNT(*) AS count FROM AsistenciaClases WHERE ClienteID = :id`,
             [id]
@@ -312,7 +294,6 @@ async function deleteCliente(req, res) {
             return res.status(409).json({ message: 'No se puede eliminar el cliente porque tiene registros de asistencia a clases. Considere anonimizar o archivar estos registros si es necesario.' });
         }
 
-        // 3. Verificar notas asociadas (still prevent deletion if these exist)
         const notasResult = await connection.execute(
             `SELECT COUNT(*) AS count FROM NotasClientes WHERE ClienteID = :id`,
             [id]
@@ -322,7 +303,6 @@ async function deleteCliente(req, res) {
             return res.status(409).json({ message: 'No se puede eliminar el cliente porque tiene notas asociadas. Por favor, elimine primero las notas o manéjelas según la política de la empresa.' });
         }
 
-        // 4. Proceed with deleting the client itself
         const result = await connection.execute(
             `DELETE FROM Clientes WHERE ClienteID = :id`,
             [id],
@@ -340,13 +320,13 @@ async function deleteCliente(req, res) {
     } catch (err) {
         if (connection) {
             try {
-                await connection.rollback(); // Changed from execute('ROLLBACK')
+                await connection.rollback();
             } catch (rollbackErr) {
                 console.error('Error al hacer rollback en deleteCliente:', rollbackErr);
             }
         }
         console.error(`Error al eliminar cliente ${id}:`, err);
-        // Manejo de errores de OracleDB (ej. ORA-02292: integrity constraint violated - child record found)
+        // Manejo de errores de OracleDB
         if (err.errorNum && err.errorNum === 2292) {
              return res.status(409).json({ message: 'Error de integridad: No se puede eliminar el cliente porque tiene registros relacionados en otras tablas que no fueron detectados por las verificaciones previas. Revise las membresías, asistencias o notas.' });
         }
@@ -391,7 +371,6 @@ async function deleteClienteMembresia(req, res) {
 
     } catch (err) {
         console.error(`Error al eliminar membresía ${clienteMembresiaId} del cliente ${clienteId}:`, err);
-        // Check for specific Oracle errors if needed, e.g., foreign key constraints if this table was a parent
         res.status(500).json({ message: 'Error del servidor al eliminar la membresía del cliente: ' + err.message });
     } finally {
         if (connection) {
@@ -404,18 +383,14 @@ async function deleteClienteMembresia(req, res) {
     }
 }
 
-// Función auxiliar para asignar una membresía a un cliente (MODIFIED)
+// Función auxiliar para asignar una membresía a un cliente
 async function asignarMembresiaACliente(connection, clienteId, membresiaId, tipoPagoId, notas) {
-    // Step 1: Delete existing active/pending memberships for this client
-    // Instead of updating to 'Reemplazada' (which violates check constraint), 
-    // we delete the existing records as suggested
     const deleteSql = `
         DELETE FROM ClientesMembresias
         WHERE ClienteID = :clienteId
           AND Estado IN ('Activa', 'Pendiente')`;
     await connection.execute(deleteSql, { clienteId });
 
-    // Step 2: Fetch details of the new membership to be assigned
     const membresiaResult = await connection.execute(
         'SELECT Precio, DuracionDias FROM Membresias WHERE MembresiaID = :id',
         [membresiaId]
@@ -432,8 +407,6 @@ async function asignarMembresiaACliente(connection, clienteId, membresiaId, tipo
     const fechaFin = new Date();
     fechaFin.setDate(fechaInicio.getDate() + duracionDias);
 
-    // Step 3: Insert the new membership as 'Activa'
-    // Ensure TipoPagoID and Notas are included.
     const sqlMembresia = `INSERT INTO ClientesMembresias
                          (ClienteID, MembresiaID, FechaInicio, FechaFin, Estado, MontoPagado, FechaPago, TipoPagoID, Notas)
                          VALUES (:clienteId, :membresiaId, :fechaInicio, :fechaFin, 'Activa', :precio, SYSDATE, :tipoPagoId, :notas)`;
@@ -444,8 +417,8 @@ async function asignarMembresiaACliente(connection, clienteId, membresiaId, tipo
         fechaInicio: fechaInicio,
         fechaFin: fechaFin,
         precio: precio,
-        tipoPagoId: tipoPagoId || null, // Handle if tipoPagoId is undefined/null
-        notas: notas || null           // Handle if notas is undefined/null
+        tipoPagoId: tipoPagoId || null, 
+        notas: notas || null    
     });
 }
 
@@ -479,42 +452,28 @@ async function getMembresiasDisponibles(req, res) {
     }
 }
 
-// Asignar membresía a un cliente existente (MODIFIED to pass all params and check for existing active membership)
+// Asignar membresía a un cliente existente
 async function asignarMembresia(req, res) {
     let connection;
     const { clienteId } = req.params;
-    const { membresiaId, metodoPago, notas } = req.body; // metodoPago should be TipoPagoID
+    const { membresiaId, metodoPago, notas } = req.body;
 
     if (!membresiaId) {
         return res.status(400).json({ message: 'El ID de la membresía es obligatorio.' });
     }
-    // Basic validation for metodoPago if it's expected to be a number (ID)
-    // No specific validation for notas, it's optional.
 
     try {
         connection = await oracledb.getConnection(dbConfig);
-        // Ensure transactionality for the check and subsequent assignment
-        // The autoCommit is false by default on the connection object from the pool
-        // oracledb.autoCommit = false; // This would be a global setting, better to manage per transaction
-
-        // Check if the client already has an active or pending membership
         const checkExistingSql = `
             SELECT COUNT(*) AS count
             FROM ClientesMembresias
             WHERE ClienteID = :clienteId
               AND Estado IN ('Activa', 'Pendiente')`;
-        // Execute the check. autoCommit should be false for the transaction to hold.
         const checkResult = await connection.execute(checkExistingSql, { clienteId }, { autoCommit: false }); 
 
         if (checkResult.rows[0] && checkResult.rows[0][0] > 0) {
-            // Client already has an active/pending membership
-            // No need to rollback here as we haven't made changes yet, and we are about to close/release the connection.
-            // However, if other operations preceded this check within the same transaction, a rollback would be needed.
             return res.status(409).json({ message: 'El cliente ya tiene una membresía activa o pendiente. No se puede asignar una nueva directamente. Para cambiarla, actualice al cliente.' });
         }
-
-        // If no active/pending membership, proceed to assign the new one
-        // asignarMembresiaACliente will also use the same connection and participate in the transaction
         await asignarMembresiaACliente(connection, clienteId, membresiaId, metodoPago, notas);
 
         await connection.commit(); 
@@ -585,7 +544,7 @@ async function getMembresiasCliente(req, res) {
     }
 }
 
-// Actualizar membresías vencidas (nuevo endpoint)
+// Actualizar membresías vencidas
 async function actualizarMembresiasVencidas(req, res) {
     let connection;
     try {
@@ -623,10 +582,10 @@ module.exports = {
     getClienteById,
     createCliente,
     updateCliente,
-    deleteCliente, // Modified
-    deleteClienteMembresia, // Added
+    deleteCliente, 
+    deleteClienteMembresia, 
     getMembresiasDisponibles,
     asignarMembresia,
     getMembresiasCliente,
-    actualizarMembresiasVencidas // Nuevo endpoint
+    actualizarMembresiasVencidas 
 };

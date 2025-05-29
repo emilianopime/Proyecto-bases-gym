@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formularioCliente = document.getElementById('formulario-cliente');
     const cuerpoTablaClientes = document.getElementById('cuerpoTablaClientes');
 
-    // Elementos del perfil del cliente (para poblar desde el backend)
+    // Elementos del perfil del cliente
     const perfilClienteNombreCompleto = document.getElementById('perfilClienteNombreCompleto');
     const perfilClienteID = document.getElementById('perfilClienteID');
     const perfilPrimerNombre = document.getElementById('perfilPrimerNombre');
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnMostrarFormularioRegistro) {
         btnMostrarFormularioRegistro.addEventListener('click', function() {
             formularioCliente.reset();
-            delete formularioCliente.dataset.editingId; // Asegurar que no esté en modo edición
+            delete formularioCliente.dataset.editingId; // Asegura que no esté en modo edición
             document.querySelector('#seccionRegistrarCliente legend').textContent = "Datos del Nuevo Cliente";
             formularioCliente.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Guardar Cliente';
             mostrarSeccion(seccionRegistrarCliente);
@@ -69,14 +69,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const datosCliente = Object.fromEntries(formData.entries());
             const clienteIdParaActualizar = formularioCliente.dataset.editingId;
 
-            console.log("Datos del formulario principal (formularioCliente):", datosCliente); // Log all data
-            console.log("Membresía ID seleccionada (formularioCliente):", formData.get('membresia')); // Specifically log membresia
+            console.log("Datos del formulario principal (formularioCliente):", datosCliente); 
+            console.log("Membresía ID seleccionada (formularioCliente):", formData.get('membresia')); 
             
-            let url = '/api/clientes'; // URL para crear
+            let url = '/api/clientes'; 
             let method = 'POST';
 
             if (clienteIdParaActualizar) {
-                url = `/api/clientes/${clienteIdParaActualizar}`; // URL para actualizar
+                url = `/api/clientes/${clienteIdParaActualizar}`; 
                 method = 'PUT';
             }
 
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resultado = await response.json();
                 console.log('Respuesta del servidor:', resultado);
                 alert(clienteIdParaActualizar ? 'Cliente actualizado con éxito' : 'Cliente registrado con éxito');
-                    cargarClientes(); // Recargar la lista
+                    cargarClientes(); 
                 mostrarSeccion(seccionListaClientes);
                 formularioCliente.reset();
                 delete formularioCliente.dataset.editingId;
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const resultado = await response.json();
             alert(resultado.message || 'Cliente eliminado con éxito.');
-            cargarClientes(); // Recargar la lista de clientes
+            cargarClientes(); 
         } catch (error) {
             console.error(`Error al eliminar cliente ${clienteId}:`, error);
             alert(`Error al eliminar cliente: ${error.message}`);
@@ -260,18 +260,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 perfilSegundoNombre.textContent = cliente.segundoNombre || 'N/A';
                 perfilApellidoPaterno.textContent = cliente.apellidoPaterno || 'N/A';
                 perfilApellidoMaterno.textContent = cliente.apellidoMaterno || 'N/A';
-                perfilFechaNacimiento.textContent = cliente.fechaNacimiento ? cliente.fechaNacimiento : 'N/A'; // Ya viene como YYYY-MM-DD
+                perfilFechaNacimiento.textContent = cliente.fechaNacimiento ? cliente.fechaNacimiento : 'N/A';
                 perfilTelefono.textContent = cliente.telefono || 'N/A';
                 perfilCorreo.textContent = cliente.correo || 'N/A';                perfilGenero.textContent = cliente.genero || 'N/A'; 
-                perfilFechaRegistro.textContent = cliente.fechaRegistro ? cliente.fechaRegistro : 'N/A'; // Ya viene como YYYY-MM-DD
+                perfilFechaRegistro.textContent = cliente.fechaRegistro ? cliente.fechaRegistro : 'N/A'; 
                 
                 // Cargar datos para las otras pestañas (Membresías, Asistencia, Notas)
                 cargarMembresiasCliente(clienteId);
-                // cargarAsistenciaCliente(clienteId);
-                // cargarNotasCliente(clienteId);
                 
                 mostrarSeccion(seccionPerfilCliente);
-                abrirTab(null, 'infoPersonalTab'); // Abrir la primera pestaña por defecto
+                abrirTab(null, 'infoPersonalTab');
             } else {
                 alert("Cliente no encontrado.");
             }
@@ -279,18 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error(`Error al cargar perfil del cliente ${clienteId}:`, error);
             alert("Error al cargar el perfil del cliente: " + error.message);
         }
-        
-        // Placeholder si no hay backend:
-        // alert(`Simulación: Mostrar perfil para cliente ID ${clienteId}. Reemplazar con llamada real.`);
-        // Deberías limpiar los campos del perfil o mostrar un mensaje si no se pueden cargar los datos.
-        // perfilClienteNombreCompleto.textContent = "Nombre Apellido (Carga Pendiente)";
-        // perfilClienteID.textContent = clienteId;
-        // ... limpiar o poner placeholders en otros campos del perfil
-        // listaMembresiasCliente.innerHTML = "<p><em>Carga de membresías pendiente...</em></p>";
-        // listaAsistenciaCliente.innerHTML = "<p><em>Carga de asistencia pendiente...</em></p>";
-        // listaNotasCliente.innerHTML = "<p><em>Carga de notas pendiente...</em></p>";
-        // mostrarSeccion(seccionPerfilCliente);
-        // abrirTab(null, 'infoPersonalTab');
     }
 
     async function prepararEdicionCliente(clienteId) {
@@ -308,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('segundoNombre').value = clienteAEditar.segundoNombre || '';
                 document.getElementById('apellidoPaterno').value = clienteAEditar.apellidoPaterno || '';
                 document.getElementById('apellidoMaterno').value = clienteAEditar.apellidoMaterno || '';
-                document.getElementById('fechaNacimiento').value = clienteAEditar.fechaNacimiento || ''; // Viene como YYYY-MM-DD
+                document.getElementById('fechaNacimiento').value = clienteAEditar.fechaNacimiento || ''; 
                 document.getElementById('telefono').value = clienteAEditar.telefono || '';
                 document.getElementById('correo').value = clienteAEditar.correo || '';
                 document.getElementById('genero').value = clienteAEditar.genero || '';
@@ -318,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (clienteAEditar.currentMembresiaID) {
                     selectMembresia.value = clienteAEditar.currentMembresiaID;
                 } else {
-                    selectMembresia.value = ""; // Si no tiene membresía activa/pendiente, seleccionar la opción por defecto
+                    selectMembresia.value = "";
                 }
 
                 formularioCliente.dataset.editingId = clienteId;
@@ -332,21 +318,8 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error(`Error al obtener datos del cliente ${clienteId} para edición:`, error);
             alert("Error al obtener datos del cliente para editar: " + error.message);
         }
-
-        // Placeholder si no hay backend:
-        // alert(`Simulación: Preparar edición para cliente ID ${clienteId}. Reemplazar con llamada real.`);
-        // Podrías poblar el formulario con datos genéricos o un mensaje
-        // formularioCliente.reset();
-        // document.getElementById('primerNombre').value = "Nombre a Editar";
-        // formularioCliente.dataset.editingId = clienteId;
-        // document.querySelector('#seccionRegistrarCliente legend').textContent = "Editar Datos del Cliente";
-        // formularioCliente.querySelector('.btn-submit').innerHTML = '<i class="fas fa-save"></i> Actualizar Cliente';
-        // mostrarSeccion(seccionRegistrarCliente);
     }
-
     // --- FILTRADO DE TABLA (CLIENT-SIDE) ---
-    // Esta función puede permanecer si el filtrado es client-side sobre los datos ya cargados.
-    // Si tienes muchos datos, considera un filtrado server-side (enviar el término de búsqueda a la API).
     window.filtrarTabla = function() {
         const filtroInput = document.getElementById('buscarCliente');
         if (!filtroInput) return;
@@ -366,10 +339,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }    // --- INICIALIZACIÓN ---
     mostrarSeccion(seccionListaClientes);
-    cargarClientes(); // Intentar cargar los clientes al iniciar
-    cargarMembresiasDisponibles(); // Cargar las membresías disponibles para el formulario
+    cargarClientes(); 
+    cargarMembresiasDisponibles();
     
-    // Hacer la función cargarClientes disponible globalmente para actualizaciones desde otras ventanas
     window.cargarClientes = cargarClientes;
 
     // --- FUNCIONES PARA MEMBRESÍAS ---
@@ -388,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectMembresia = document.getElementById('membresia');
         if (!selectMembresia) return;
 
-        // Limpiar opciones existentes excepto la primera
         while (selectMembresia.children.length > 1) {
             selectMembresia.removeChild(selectMembresia.lastChild);
         }
@@ -511,8 +482,8 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
-            console.log("Datos del modal de asignación de membresía:", data); // Log all data from modal
-            console.log("Membresía ID seleccionada (modal):", formData.get('membresiaId')); // Specifically log membresiaId from modal
+            console.log("Datos del modal de asignación de membresía:", data);
+            console.log("Membresía ID seleccionada (modal):", formData.get('membresiaId'));
             
             try {
                 const response = await fetch(`/api/clientes/${clienteId}/membresias`, {
@@ -526,12 +497,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(errorData.message || 'Error al asignar membresía');
                 }                alert('Membresía asignada con éxito');
                 modal.remove();
-                cargarMembresiasCliente(clienteId); // Recargar la lista de membresías
-                cargarClientes(); // Recargar la tabla de clientes para mostrar la nueva membresía
+                cargarMembresiasCliente(clienteId);
+                cargarClientes();
             } catch (error) {
                 console.error('Error al asignar membresía:', error);
                 alert('Error al asignar membresía: ' + error.message);
             }
         });
     }
-}); // Fin de DOMContentLoaded
+});

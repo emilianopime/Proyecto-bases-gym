@@ -5,15 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Obtén los valores del formulario
+    // Obtiene los valores del formulario
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    // Opcional: muestra mensaje de cargando
     messageDiv.textContent = 'Procesando...';
 
     try {
-      // Haz la petición al backend
+      // Petición al backend
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (response.ok && data.userId) {
         // Login exitoso
         localStorage.setItem('userId', data.userId);
-        localStorage.setItem('username', data.username); // Guardar el username retornado
-        localStorage.setItem('userRole', data.role); // Guardar el rol del usuario
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('userRole', data.role);
         messageDiv.textContent = '¡Bienvenido! Redirigiendo...';
         setTimeout(() => {
           window.location.href = 'hub.html'; 

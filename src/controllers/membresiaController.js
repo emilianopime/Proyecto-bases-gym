@@ -196,9 +196,6 @@ async function deleteMembresia(req, res) {
 
     try {
         connection = await oracledb.getConnection(dbConfig);
-        // Antes de eliminar, verificar si alguna ClientesMembresias la referencia.
-        // Esto es una simplificación. En un sistema real, podrías querer impedir la eliminación
-        // si hay membresías activas de este tipo, o marcarlas como "obsoletas" en lugar de eliminar.
         const checkUsage = await connection.execute(
             'SELECT COUNT(*) AS count FROM ClientesMembresias WHERE MembresiaID = :id',
             [id]

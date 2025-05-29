@@ -330,5 +330,5 @@ module.exports = {
     updateEntrenador,
     deleteEntrenador,
     getClasesEntrenador,
-    getClientesDeEntrenador // Nueva función exportada
+    getClientesDeEntrenador
 };

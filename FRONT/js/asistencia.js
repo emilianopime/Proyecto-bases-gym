@@ -490,14 +490,10 @@ function formatearFecha(fecha) {
 }
 
 function verDetallesClase(claseId) {
-    // Esta función se podría expandir para mostrar más detalles de la clase
-    // Por ahora, simplemente abre el modal de asistencia
     abrirModalAsistencia(claseId);
 }
 
 function editarAsistencia(asistenciaId) {
-    // Esta función se podría implementar para editar una asistencia existente
-    // Por simplicidad, por ahora solo mostramos un mensaje
     mostrarNotificacion('Funcionalidad de edición en desarrollo', 'info');
 }
 
@@ -512,7 +508,7 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
         </div>
     `;
     
-    // Agregar estilos si no existen
+    // Agregar estilos
     if (!document.getElementById('notification-styles')) {
         const styles = document.createElement('style');
         styles.id = 'notification-styles';
@@ -559,7 +555,7 @@ function mostrarNotificacion(mensaje, tipo = 'info') {
     // Agregar al DOM
     document.body.appendChild(notificacion);
     
-    // Eliminar después de 4 segundos
+    // Eliminar
     setTimeout(() => {
         notificacion.style.animation = 'slideIn 0.3s ease reverse';
         setTimeout(() => {
