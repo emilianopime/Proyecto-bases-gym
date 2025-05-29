@@ -83,8 +83,6 @@ CREATE TABLE Clases (
     CONSTRAINT FK_Clases_Entrenador FOREIGN KEY (EntrenadorID) REFERENCES Entrenadores(EntrenadorID),
     CONSTRAINT CHK_Clases_HoraInicioFormat CHECK (REGEXP_LIKE(HoraInicio, '^[0-2][0-9]:[0-5][0-9]$')) -- Valida formato HH:MM
 );
-COMMENT ON COLUMN Clases.HoraInicio IS 'Hora de inicio de la clase en formato HH:MM (ej. "09:00", "18:30"). Se almacena como texto pero se valida el formato.';
-
 
 -- 7. Tabla AsistenciaClases (Registro de asistencia de clientes a clases)
 CREATE TABLE AsistenciaClases (
@@ -111,7 +109,6 @@ CREATE TABLE UsuariosSistema (
     FechaCreacion DATE DEFAULT SYSDATE NOT NULL
 );
 
-COMMENT ON COLUMN UsuariosSistema.PasswordHash IS 'Almacenar el HASH de la contraseña, NUNCA la contraseña en texto plano.';
 
 -- 9. Tabla NotasClientes (Para notas internas sobre los clientes)
 CREATE TABLE NotasClientes (
@@ -124,5 +121,6 @@ CREATE TABLE NotasClientes (
     CONSTRAINT FK_NotasClientes_Usuario FOREIGN KEY (UsuarioID) REFERENCES UsuariosSistema(UsuarioID)
 );
 
+ALTER TABLE UsuariosSistema MODIFY (PasswordHash VARCHAR2(255));
 
 COMMIT;
