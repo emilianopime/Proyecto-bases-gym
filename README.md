@@ -49,13 +49,6 @@ Aplicación web para la gestión de gimnasios. Permite administrar clientes, mem
 
 5.  **Crear Usuarios de Prueba/Administrador:**
     *   **Opción A (Recomendado - Usando scripts provistos):**
-        *   **Para un usuario 'admin' genérico (configurable):**
-            El script `insertarUsuario.js` (anteriormente mencionado) puede ser usado o adaptado para crear un usuario administrador principal.
-            ```bash
-            node insertarUsuario.js 
-            ```
-            Asegúrate de que el `Username` y `Correo` dentro de este script sean únicos.
-
         *   **Para un usuario de prueba 'testuser' (contraseña: 'temp123'):**
             El script `insertTestUser.js` está diseñado para crear o actualizar un usuario específico llamado `testuser` con la contraseña `temp123` y correo `testuser@gym.com`.
             ```bash
