@@ -21,23 +21,31 @@ async function crearOActualizarUsuarioAdmin() {
         );
 
         if (resultSelect.rows.length > 0) {
-            // El usuario existe, actualizar PasswordHash
-            console.log(`El usuario "${usernameAdmin}" ya existe. Actualizando PasswordHash.`);
-            const resultUpdate = await connection.execute(
+            // El usuario existe, actualizar PasswordHash y otros campos si es necesario
+            console.log(`El usuario "${usernameAdmin}" ya existe. Actualizando datos.`);
+            await connection.execute(
                 `UPDATE UsuariosSistema 
-                 SET PasswordHash = :passwordHash, NombreCompleto = 'Administrador del Sistema', Rol = 'Administrador', Correo = 'admin@gym.com', Activo = 1
+                 SET PasswordHash = :passwordHash,
+                     NombreCompleto = :nombreCompleto,
+                     Rol = :rol,
+                     Correo = :correo,
+                     Activo = :activo
                  WHERE Username = :username`,
                 {
                     passwordHash: passwordHash,
+                    nombreCompleto: 'Administrador del Sistema', // Puedes ajustar si no quieres actualizar siempre
+                    rol: 'Administrador', // Puedes ajustar
+                    correo: 'admin@gym.com', // Puedes ajustar
+                    activo: 1, // Puedes ajustar
                     username: usernameAdmin
                 },
                 { autoCommit: true }
             );
-            console.log('PasswordHash del usuario admin actualizado exitosamente.');
+            console.log('Datos del usuario admin actualizados exitosamente.');
         } else {
             // El usuario no existe, insertar nuevo usuario
             console.log(`El usuario "${usernameAdmin}" no existe. Creando nuevo usuario.`);
-            const resultInsert = await connection.execute(
+            await connection.execute( // Asegúrate de usar await aquí también si no lo tenías
                 `INSERT INTO UsuariosSistema (NombreCompleto, Username, PasswordHash, Rol, Correo, Activo) 
                  VALUES (:nombreCompleto, :username, :passwordHash, :rol, :correo, :activo)`,
                 {
